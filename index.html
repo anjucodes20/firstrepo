@@ -1,21 +1,26 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="An ultra-modern, interactive Hello World experience crafted with pure HTML, vanilla CSS glassmorphism, and dynamic animations.">
+  <meta name="description"
+    content="An ultra-modern, interactive Hello World experience crafted with pure HTML, vanilla CSS glassmorphism, and dynamic animations.">
   <meta name="keywords" content="Hello World, Modern HTML, Web Design, Interactive, Vanilla CSS, JavaScript">
   <meta name="author" content="Antigravity">
-  
+
   <title>Hello World — Modern Interactive Web Experience</title>
 
   <!-- Google Fonts: Outfit & Inter -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Outfit:wght@500;700;800;900&display=swap" rel="stylesheet">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Outfit:wght@500;700;800;900&display=swap"
+    rel="stylesheet">
 
   <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
   <!-- Ambient Interactive Canvas Background -->
   <canvas id="ambient-canvas" aria-hidden="true"></canvas>
@@ -33,9 +38,12 @@
       </div>
       <div class="header-actions">
         <button id="theme-accent-btn" class="icon-btn" title="Cycle Color Theme" aria-label="Cycle theme accent">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+            stroke-linecap="round" stroke-linejoin="round">
             <circle cx="12" cy="12" r="5"></circle>
-            <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"></path>
+            <path
+              d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42">
+            </path>
           </svg>
         </button>
       </div>
@@ -50,15 +58,17 @@
         </div>
 
         <!-- Single <h1> as per SEO standards -->
-        <h1 class="hero-title" id="main-greeting">Hello, World!</h1>
+        <h1 class="hero-title" id="main-greeting">Hello, Dhivya!</h1>
 
         <p class="hero-subtitle" id="greeting-desc">
-          The timeless phrase that sparked every developer's journey, reimagined with modern glassmorphism, responsive depth, and micro-interactions.
+          The timeless phrase that sparked every developer's journey, reimagined with modern glassmorphism, responsive
+          depth, and micro-interactions.
         </p>
 
         <!-- Dynamic Language Pills Bar -->
         <div class="language-bar" role="tablist" aria-label="Choose greeting language" id="language-tabs">
-          <button class="lang-pill active" data-lang="en" id="lang-btn-en" role="tab" aria-selected="true">English</button>
+          <button class="lang-pill active" data-lang="en" id="lang-btn-en" role="tab"
+            aria-selected="true">English</button>
           <button class="lang-pill" data-lang="es" id="lang-btn-es" role="tab" aria-selected="false">Español</button>
           <button class="lang-pill" data-lang="fr" id="lang-btn-fr" role="tab" aria-selected="false">Français</button>
           <button class="lang-pill" data-lang="ja" id="lang-btn-ja" role="tab" aria-selected="false">日本語</button>
@@ -75,7 +85,8 @@
           </button>
 
           <button class="btn btn-secondary" id="btn-copy-greeting" title="Copy greeting text">
-            <svg class="btn-svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <svg class="btn-svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+              stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
               <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
             </svg>
@@ -83,7 +94,8 @@
           </button>
 
           <button class="btn btn-tertiary" id="btn-random-greeting" title="Randomize Greeting">
-            <svg class="btn-svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <svg class="btn-svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+              stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <polyline points="16 3 21 3 21 8"></polyline>
               <line x1="4" y1="20" x2="21" y2="3"></line>
               <polyline points="21 16 21 21 16 21"></polyline>
@@ -128,4 +140,5 @@
 
   <script src="app.js"></script>
 </body>
+
 </html>
