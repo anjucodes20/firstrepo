@@ -5,137 +5,807 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description"
-    content="An ultra-modern, interactive Hello World experience crafted with pure HTML, vanilla CSS glassmorphism, and dynamic animations.">
-  <meta name="keywords" content="Hello World, Modern HTML, Web Design, Interactive, Vanilla CSS, JavaScript">
-  <meta name="author" content="Antigravity">
+    content="Chromatica — The ultimate interactive color encyclopedia. Explore color types, color spaces, harmony schemes, psychological meanings, and a curated library of iconic shades.">
+  <meta name="keywords"
+    content="Color Theory, Color Types, Primary Colors, Secondary Colors, RGB, CMYK, HSL, Color Harmonies, Color Psychology, Hex Codes, Palette Generator">
+  <meta name="author" content="Chromatica">
 
-  <title>Hello World — Modern Interactive Web Experience</title>
+  <title>Chromatica — The Interactive Color Encyclopedia & Theory Guide</title>
 
-  <!-- Google Fonts: Outfit & Inter -->
+  <!-- Google Fonts: Space Grotesk & Plus Jakarta Sans -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link
-    href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Outfit:wght@500;700;800;900&display=swap"
+    href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap"
     rel="stylesheet">
 
   <link rel="stylesheet" href="style.css">
 </head>
 
-<body>
-  <!-- Ambient Interactive Canvas Background -->
-  <canvas id="ambient-canvas" aria-hidden="true"></canvas>
+<body data-theme="dark">
+  <!-- Dynamic Ambient Glow Backdrop -->
+  <div class="ambient-canvas-wrapper" aria-hidden="true">
+    <div class="glow-sphere sphere-1" id="ambient-sphere-1"></div>
+    <div class="glow-sphere sphere-2" id="ambient-sphere-2"></div>
+    <div class="glow-sphere sphere-3" id="ambient-sphere-3"></div>
+    <div class="grid-overlay"></div>
+  </div>
 
-  <div class="glow-orb orb-1" aria-hidden="true"></div>
-  <div class="glow-orb orb-2" aria-hidden="true"></div>
-  <div class="glow-orb orb-3" aria-hidden="true"></div>
+  <div class="app-layout">
+    <!-- Navigation Bar -->
+    <header class="navbar" id="site-header">
+      <div class="nav-container">
+        <a href="#hero" class="brand-logo" id="logo-link">
+          <div class="logo-mark" aria-hidden="true">
+            <span class="logo-dot dot-red"></span>
+            <span class="logo-dot dot-yellow"></span>
+            <span class="logo-dot dot-blue"></span>
+            <span class="logo-dot dot-green"></span>
+          </div>
+          <span class="logo-text">Chromatica<span class="logo-accent">.</span></span>
+        </a>
 
-  <!-- Main Container -->
-  <div class="page-wrapper">
-    <header class="app-header">
-      <div class="brand-pill" id="brand-badge">
-        <span class="status-indicator"></span>
-        <span class="brand-text">Live Preview</span>
-      </div>
-      <div class="header-actions">
-        <button id="theme-accent-btn" class="icon-btn" title="Cycle Color Theme" aria-label="Cycle theme accent">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-            stroke-linecap="round" stroke-linejoin="round">
-            <circle cx="12" cy="12" r="5"></circle>
-            <path
-              d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42">
-            </path>
-          </svg>
-        </button>
+        <nav class="nav-links" id="primary-navigation" aria-label="Main Navigation">
+          <a href="#color-types" class="nav-link">Types of Colors</a>
+          <a href="#color-models" class="nav-link">Color Models</a>
+          <a href="#harmonies" class="nav-link">Harmonies & Wheel</a>
+          <a href="#psychology" class="nav-link">Psychology</a>
+          <a href="#color-library" class="nav-link">Color Library</a>
+          <a href="#palette-studio" class="nav-link">Mood Palettes</a>
+        </nav>
+
+        <div class="nav-actions">
+          <button class="nav-action-btn" id="btn-surprise-me" title="Random Color Spotlight" aria-label="Random color">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M16 3h5v5M4 20L21 3M21 16v5h-5M15 15l6 6M4 4l5 5"></path>
+            </svg>
+            <span class="btn-text">Surprise Me</span>
+          </button>
+
+          <button class="icon-toggle-btn" id="btn-theme-toggle" title="Toggle Light/Dark Theme"
+            aria-label="Toggle theme">
+            <svg class="sun-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+              stroke-width="2">
+              <circle cx="12" cy="12" r="5"></circle>
+              <line x1="12" y1="1" x2="12" y2="3"></line>
+              <line x1="12" y1="21" x2="12" y2="23"></line>
+              <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+              <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+              <line x1="1" y1="12" x2="3" y2="12"></line>
+              <line x1="21" y1="12" x2="23" y2="12"></line>
+              <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+              <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+            </svg>
+            <svg class="moon-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+              stroke-width="2">
+              <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+            </svg>
+          </button>
+        </div>
       </div>
     </header>
 
-    <main class="main-content">
-      <section class="hero-card" id="hero-card">
-        <div class="card-glass-shine"></div>
-
-        <div class="badge-wrapper">
-          <span class="sub-badge" id="category-badge">Web Experience</span>
+    <main id="main-content">
+      <!-- Hero Section -->
+      <section class="hero-section" id="hero">
+        <div class="hero-badge-pill">
+          <span class="pulse-dot"></span>
+          <span>Color Theory & Encyclopedia</span>
         </div>
 
-        <!-- Single <h1> as per SEO standards -->
-        <h1 class="hero-title" id="main-greeting">Hello, Dhivya!</h1>
+        <h1 class="hero-title">
+          Everything You Need to Know About <span class="gradient-text" id="dynamic-hero-word">Colours</span>
+        </h1>
 
-        <p class="hero-subtitle" id="greeting-desc">
-          The timeless phrase that sparked every developer's journey, reimagined with modern glassmorphism, responsive
-          depth, and micro-interactions.
+        <p class="hero-description">
+          Delve into color classifications, scientific color spaces (RGB, CMYK, HSL), psychological resonance, harmony
+          rules, and an encyclopedic catalog of iconic named shades.
         </p>
 
-        <!-- Dynamic Language Pills Bar -->
-        <div class="language-bar" role="tablist" aria-label="Choose greeting language" id="language-tabs">
-          <button class="lang-pill active" data-lang="en" id="lang-btn-en" role="tab"
-            aria-selected="true">English</button>
-          <button class="lang-pill" data-lang="es" id="lang-btn-es" role="tab" aria-selected="false">Español</button>
-          <button class="lang-pill" data-lang="fr" id="lang-btn-fr" role="tab" aria-selected="false">Français</button>
-          <button class="lang-pill" data-lang="ja" id="lang-btn-ja" role="tab" aria-selected="false">日本語</button>
-          <button class="lang-pill" data-lang="hi" id="lang-btn-hi" role="tab" aria-selected="false">हिन्दी</button>
-          <button class="lang-pill" data-lang="de" id="lang-btn-de" role="tab" aria-selected="false">Deutsch</button>
-          <button class="lang-pill" data-lang="it" id="lang-btn-it" role="tab" aria-selected="false">Italiano</button>
+        <!-- Quick Jump / Search Bar in Hero -->
+        <div class="hero-search-box">
+          <div class="search-input-wrapper">
+            <svg class="search-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+              stroke-width="2">
+              <circle cx="11" cy="11" r="8"></circle>
+              <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+            </svg>
+            <input type="text" id="hero-color-search" placeholder="Search any color name, hex code, or type (e.g., Ultramarine, #E0115F, Pastel)..."
+              autocomplete="off" spellcheck="false">
+            <button id="clear-search-btn" class="clear-search-btn hidden" title="Clear search" aria-label="Clear search">✕</button>
+          </div>
+          <a href="#color-library" class="btn-search-jump" id="btn-explore-jump">
+            Explore 80+ Colors
+          </a>
         </div>
 
-        <!-- Action Buttons -->
-        <div class="action-group">
-          <button class="btn btn-primary" id="btn-say-hello">
-            <span class="btn-icon">✨</span>
-            <span class="btn-label">Celebrate Hello</span>
-          </button>
+        <!-- Hero Feature Spotlight Banner -->
+        <div class="hero-spotlight-card" id="hero-spotlight">
+          <div class="spotlight-swatch" id="spotlight-swatch-box" style="background-color: #120A8F;">
+            <span class="spotlight-tag" id="spotlight-badge">Color of the Moment</span>
+          </div>
+          <div class="spotlight-info">
+            <div class="spotlight-header">
+              <div>
+                <h3 class="spotlight-name" id="spotlight-name">Ultramarine</h3>
+                <span class="spotlight-family" id="spotlight-sub">Deep Historic Blue &bull; Royal / Spiritual</span>
+              </div>
+              <div class="spotlight-code-badge" id="spotlight-hex">#120A8F</div>
+            </div>
+            <p class="spotlight-desc" id="spotlight-desc">
+              Originally made by grinding lapis lazuli into powder, ultramarine was more expensive than gold during the Renaissance and reserved strictly for sacred vestments.
+            </p>
+            <div class="spotlight-actions">
+              <button class="btn-pill-action" id="btn-copy-spotlight-hex">
+                <span>Copy Hex</span>
+              </button>
+              <button class="btn-pill-action secondary" id="btn-inspect-spotlight">
+                <span>View Full Details &rarr;</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
 
-          <button class="btn btn-secondary" id="btn-copy-greeting" title="Copy greeting text">
-            <svg class="btn-svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-              stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
-              <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
-            </svg>
-            <span class="btn-label" id="copy-btn-text">Copy Phrase</span>
-          </button>
-
-          <button class="btn btn-tertiary" id="btn-random-greeting" title="Randomize Greeting">
-            <svg class="btn-svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-              stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <polyline points="16 3 21 3 21 8"></polyline>
-              <line x1="4" y1="20" x2="21" y2="3"></line>
-              <polyline points="21 16 21 21 16 21"></polyline>
-              <line x1="15" y1="15" x2="21" y2="21"></line>
-              <line x1="4" y1="4" x2="9" y2="9"></line>
-            </svg>
-            <span>Surprise Me</span>
-          </button>
+      <!-- Section 1: Types & Classifications of Colors -->
+      <section class="content-section" id="color-types">
+        <div class="section-header">
+          <div class="section-tag">Classification & Anatomy</div>
+          <h2 class="section-title">The Fundamental Types of Colours</h2>
+          <p class="section-lead">
+            In art and science, colors are categorized by how they are mixed, their temperature, their saturation, and
+            their optical characteristics.
+          </p>
         </div>
 
-        <!-- Micro Stats / Features strip -->
-        <div class="stats-grid">
-          <div class="stat-item">
-            <span class="stat-number" id="stats-counter">1</span>
-            <span class="stat-label">Greetings Sent</span>
+        <!-- Color Classification Grid -->
+        <div class="color-types-grid">
+          <!-- Card 1: Primary Colors -->
+          <article class="type-card" data-filter-type="Primary">
+            <div class="type-card-badge primary-badge">Core Foundation</div>
+            <h3 class="type-card-title">1. Primary Colors</h3>
+            <p class="type-card-text">
+              Colors that cannot be created by mixing other colors together. They are the building blocks of the entire
+              color spectrum.
+            </p>
+            <div class="type-visual-samples">
+              <div class="sample-circle" style="background-color: #E63946;" title="Red (Subtractive Primary)">
+                <span>Red</span>
+              </div>
+              <div class="sample-circle" style="background-color: #FFD166;" title="Yellow (RYB Primary)">
+                <span>Yellow</span>
+              </div>
+              <div class="sample-circle" style="background-color: #118AB2;" title="Blue (Subtractive Primary)">
+                <span>Blue</span>
+              </div>
+            </div>
+            <div class="type-card-footer">
+              <span class="type-keynote">In Paint: Red, Yellow, Blue (RYB)</span>
+              <span class="type-keynote">In Light: Red, Green, Blue (RGB)</span>
+            </div>
+          </article>
+
+          <!-- Card 2: Secondary Colors -->
+          <article class="type-card" data-filter-type="Secondary">
+            <div class="type-card-badge secondary-badge">Mixed Duos</div>
+            <h3 class="type-card-title">2. Secondary Colors</h3>
+            <p class="type-card-text">
+              Formed by mixing equal parts of two primary colors. They bridge the spectrum and introduce balance.
+            </p>
+            <div class="type-visual-samples">
+              <div class="sample-circle" style="background-color: #F77F00;" title="Orange (Red + Yellow)">
+                <span>Orange</span>
+              </div>
+              <div class="sample-circle" style="background-color: #06D6A0;" title="Green (Yellow + Blue)">
+                <span>Green</span>
+              </div>
+              <div class="sample-circle" style="background-color: #7209B7;" title="Purple (Blue + Red)">
+                <span>Purple</span>
+              </div>
+            </div>
+            <div class="type-card-footer">
+              <span class="type-keynote">Red + Yellow = Orange</span>
+              <span class="type-keynote">Yellow + Blue = Green</span>
+              <span class="type-keynote">Blue + Red = Purple</span>
+            </div>
+          </article>
+
+          <!-- Card 3: Tertiary Colors -->
+          <article class="type-card" data-filter-type="Tertiary">
+            <div class="type-card-badge tertiary-badge">Intermediate</div>
+            <h3 class="type-card-title">3. Tertiary Colors</h3>
+            <p class="type-card-text">
+              Created by mixing a primary color with an adjacent secondary color. They carry hyphenated compound names.
+            </p>
+            <div class="type-visual-samples">
+              <div class="sample-circle" style="background-color: #FF5E5B;" title="Red-Orange (Vermilion)">
+                <span>Red-Orange</span>
+              </div>
+              <div class="sample-circle" style="background-color: #FFB703;" title="Yellow-Orange (Amber)">
+                <span>Yellow-Orange</span>
+              </div>
+              <div class="sample-circle" style="background-color: #90BE6D;" title="Yellow-Green (Chartreuse)">
+                <span>Yellow-Green</span>
+              </div>
+              <div class="sample-circle" style="background-color: #0096C7;" title="Blue-Green (Teal)">
+                <span>Blue-Green</span>
+              </div>
+            </div>
+            <div class="type-card-footer">
+              <span class="type-keynote">Amber, Vermilion, Magenta, Teal, Chartreuse, Violet</span>
+            </div>
+          </article>
+
+          <!-- Card 4: Warm vs Cool Colors -->
+          <article class="type-card" data-filter-type="Temperature">
+            <div class="type-card-badge temp-badge">Color Temperature</div>
+            <h3 class="type-card-title">4. Warm vs. Cool Colors</h3>
+            <p class="type-card-text">
+              Color temperature influences spatial perception and mood. Warm colors advance toward the viewer, while cool colors recede.
+            </p>
+            <div class="temp-split-view">
+              <div class="temp-half warm">
+                <strong>Warm (Active & Inviting)</strong>
+                <p>Reds, Oranges, Yellows. Evoke sunlight, fire, passion, warmth, and appetite.</p>
+              </div>
+              <div class="temp-half cool">
+                <strong>Cool (Calm & Expansive)</strong>
+                <p>Blues, Greens, Violets. Evoke water, sky, tranquility, focus, and serenity.</p>
+              </div>
+            </div>
+          </article>
+
+          <!-- Card 5: Tints, Shades & Tones -->
+          <article class="type-card" data-filter-type="Values">
+            <div class="type-card-badge value-badge">Value Variations</div>
+            <h3 class="type-card-title">5. Tints, Shades, & Tones</h3>
+            <p class="type-card-text">
+              Every pure hue can be manipulated along three distinct dimensions of light and purity:
+            </p>
+            <div class="value-spectrum-list">
+              <div class="value-item">
+                <span class="value-tag">Tint</span>
+                <span class="value-math">Pure Hue + <strong style="color: #ffffff;">White</strong></span>
+                <span class="value-desc">Creates soft, luminous, light pastel variations.</span>
+              </div>
+              <div class="value-item">
+                <span class="value-tag">Shade</span>
+                <span class="value-math">Pure Hue + <strong style="color: #94a3b8;">Black</strong></span>
+                <span class="value-desc">Deepens the hue into rich, dramatic, dark notes.</span>
+              </div>
+              <div class="value-item">
+                <span class="value-tag">Tone</span>
+                <span class="value-math">Pure Hue + <strong style="color: #cbd5e1;">Grey</strong></span>
+                <span class="value-desc">Desaturates the hue into sophisticated, muted tones.</span>
+              </div>
+            </div>
+          </article>
+
+          <!-- Card 6: Aesthetic Families -->
+          <article class="type-card" data-filter-type="Aesthetics">
+            <div class="type-card-badge aesthetic-badge">Style Families</div>
+            <h3 class="type-card-title">6. Aesthetic Color Families</h3>
+            <p class="type-card-text">
+              Stylistic groupings widely used in design, fashion, architecture, and visual arts:
+            </p>
+            <ul class="aesthetic-pills-list">
+              <li><strong class="pill-title">Pastels:</strong> High lightness, low saturation (Lavender, Baby Blue, Mint, Peach)</li>
+              <li><strong class="pill-title">Neons:</strong> Ultra-saturated, high-luminance, electric (Cyber Green, Hot Pink)</li>
+              <li><strong class="pill-title">Earth Tones:</strong> Mineral & soil pigments (Ochre, Terracotta, Umber, Moss)</li>
+              <li><strong class="pill-title">Jewel Tones:</strong> Deep, richly saturated gemstone colors (Emerald, Sapphire, Ruby)</li>
+              <li><strong class="pill-title">Neutrals:</strong> Low chroma anchors that lack strong hue (Charcoal, Beige, Ivory, Slate)</li>
+            </ul>
+          </article>
+        </div>
+      </section>
+
+      <!-- Section 2: Color Models & Spaces (Interactive Converter) -->
+      <section class="content-section" id="color-models">
+        <div class="section-header">
+          <div class="section-tag">Science & Computation</div>
+          <h2 class="section-title">Color Models & Digital Color Spaces</h2>
+          <p class="section-lead">
+            Computers, screens, and printers interpret colors through mathematical models. Understand the difference
+            between RGB, CMYK, HSL, and HEX.
+          </p>
+        </div>
+
+        <div class="models-grid">
+          <!-- Model Card: RGB -->
+          <div class="model-card">
+            <div class="model-badge">Additive (Light)</div>
+            <h3 class="model-title">RGB (Red, Green, Blue)</h3>
+            <p class="model-desc">
+              The model for all digital screens (monitors, phones, TVs). It works by projecting colored beams of light.
+              Combining full Red + Green + Blue produces <strong>Pure White</strong>.
+            </p>
+            <div class="model-range">
+              <span>Channel Ranges: 0 &ndash; 255</span>
+              <span>Total Gamut: 16.7 Million Colors (24-bit)</span>
+            </div>
           </div>
-          <div class="stat-divider"></div>
-          <div class="stat-item">
-            <span class="stat-number" id="stats-lang-count">7+</span>
-            <span class="stat-label">Languages</span>
+
+          <!-- Model Card: CMYK -->
+          <div class="model-card">
+            <div class="model-badge">Subtractive (Pigment)</div>
+            <h3 class="model-title">CMYK (Cyan, Magenta, Yellow, Key/Black)</h3>
+            <p class="model-desc">
+              The universal standard for physical printing and ink. Pigments absorb light wavelengths.
+              Combining Cyan + Magenta + Yellow creates a dark muddy brown; pure <strong>Black (Key)</strong> ink is added for crisp depth.
+            </p>
+            <div class="model-range">
+              <span>Channel Ranges: 0% &ndash; 100%</span>
+              <span>Ideal For: Print, Packaging, Offset Lithography</span>
+            </div>
           </div>
-          <div class="stat-divider"></div>
-          <div class="stat-item">
-            <span class="stat-number">100%</span>
-            <span class="stat-label">Pure Vanilla</span>
+
+          <!-- Model Card: HSL -->
+          <div class="model-card">
+            <div class="model-badge">Perceptual (Human-Intuitive)</div>
+            <h3 class="model-title">HSL (Hue, Saturation, Lightness)</h3>
+            <p class="model-desc">
+              Designed to align with how human beings perceive color. <strong>Hue</strong> is the angle on the 360° color
+              wheel; <strong>Saturation</strong> is the vibrancy (0% gray to 100% vivid); <strong>Lightness</strong> is illumination (0% black to 100% white).
+            </p>
+            <div class="model-range">
+              <span>Hue: 0° &ndash; 360°</span>
+              <span>Saturation: 0% &ndash; 100% &bull; Lightness: 0% &ndash; 100%</span>
+            </div>
           </div>
+
+          <!-- Model Card: HEX -->
+          <div class="model-card">
+            <div class="model-badge">Web Hexadecimal</div>
+            <h3 class="model-title">HEX Codes (#RRGGBB)</h3>
+            <p class="model-desc">
+              A 6-digit hexadecimal shorthand for 24-bit RGB values. Each pair of digits (00 to FF) represents the
+              intensity of Red, Green, and Blue from 0 to 255.
+            </p>
+            <div class="model-range">
+              <span>Format: #RRGGBB</span>
+              <span>Example: #FF5733 = R: 255, G: 87, B: 51</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Interactive Color Model Converter Tool -->
+        <div class="converter-box" id="converter-tool">
+          <div class="converter-header">
+            <div>
+              <h3 class="converter-title">Live Color Space Inspector & Converter</h3>
+              <p class="converter-subtitle">Pick or type any color to see real-time conversions across all digital formats.</p>
+            </div>
+            <div class="picker-control">
+              <label for="native-color-picker" class="picker-label">Color Picker:</label>
+              <input type="color" id="native-color-picker" value="#6366F1" aria-label="Select interactive color">
+            </div>
+          </div>
+
+          <div class="converter-body">
+            <div class="converter-preview-panel" id="converter-preview" style="background-color: #6366F1;">
+              <span class="preview-contrast-text" id="converter-contrast-text">Preview Text</span>
+            </div>
+
+            <div class="converter-inputs-grid">
+              <!-- HEX Input -->
+              <div class="input-block">
+                <label for="input-hex">HEX</label>
+                <div class="input-with-copy">
+                  <input type="text" id="input-hex" value="#6366F1">
+                  <button class="copy-field-btn" data-target="input-hex" title="Copy HEX">Copy</button>
+                </div>
+              </div>
+
+              <!-- RGB Input -->
+              <div class="input-block">
+                <label for="input-rgb">RGB</label>
+                <div class="input-with-copy">
+                  <input type="text" id="input-rgb" value="rgb(99, 102, 241)">
+                  <button class="copy-field-btn" data-target="input-rgb" title="Copy RGB">Copy</button>
+                </div>
+              </div>
+
+              <!-- HSL Input -->
+              <div class="input-block">
+                <label for="input-hsl">HSL</label>
+                <div class="input-with-copy">
+                  <input type="text" id="input-hsl" value="hsl(239, 84%, 67%)">
+                  <button class="copy-field-btn" data-target="input-hsl" title="Copy HSL">Copy</button>
+                </div>
+              </div>
+
+              <!-- CMYK Input -->
+              <div class="input-block">
+                <label for="input-cmyk">CMYK (Est.)</label>
+                <div class="input-with-copy">
+                  <input type="text" id="input-cmyk" value="59%, 58%, 0%, 5%" readonly>
+                  <button class="copy-field-btn" data-target="input-cmyk" title="Copy CMYK">Copy</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Section 3: Color Harmonies & Wheel Generator -->
+      <section class="content-section" id="harmonies">
+        <div class="section-header">
+          <div class="section-tag">Design Principles</div>
+          <h2 class="section-title">Color Harmonies & Interactive Wheel</h2>
+          <p class="section-lead">
+            Color harmony refers to aesthetically pleasing combinations based on geometric relationships on the color wheel.
+          </p>
+        </div>
+
+        <div class="harmonies-container">
+          <!-- Harmony Controls -->
+          <div class="harmony-controls-bar">
+            <div class="harmony-tabs" role="tablist" id="harmony-tabs">
+              <button class="harmony-tab active" data-scheme="complementary" id="tab-complementary">Complementary</button>
+              <button class="harmony-tab" data-scheme="analogous" id="tab-analogous">Analogous</button>
+              <button class="harmony-tab" data-scheme="triadic" id="tab-triadic">Triadic</button>
+              <button class="harmony-tab" data-scheme="tetradic" id="tab-tetradic">Tetradic</button>
+              <button class="harmony-tab" data-scheme="split-complementary" id="tab-split">Split-Complementary</button>
+              <button class="harmony-tab" data-scheme="monochromatic" id="tab-monochromatic">Monochromatic</button>
+            </div>
+          </div>
+
+          <!-- Harmony Description & Swatches Display -->
+          <div class="harmony-display-card">
+            <div class="harmony-explanation">
+              <div class="harmony-meta">
+                <h3 class="harmony-scheme-title" id="harmony-title">Complementary Harmony</h3>
+                <span class="harmony-tag" id="harmony-geometry">180° Direct Opposites</span>
+              </div>
+              <p class="harmony-scheme-desc" id="harmony-description">
+                Colors positioned directly opposite each other on the color wheel. They create the highest contrast, vibrant energy, and make each other pop when placed side by side.
+              </p>
+            </div>
+
+            <!-- Dynamic Palette Output -->
+            <div class="harmony-palette-row" id="harmony-palette-output">
+              <!-- Rendered via JavaScript -->
+            </div>
+
+            <div class="harmony-quick-presets">
+              <span class="preset-label">Test with base hue:</span>
+              <button class="hue-dot-btn" style="background-color: #EF4444;" data-hue="0" title="Red"></button>
+              <button class="hue-dot-btn" style="background-color: #F97316;" data-hue="25" title="Orange"></button>
+              <button class="hue-dot-btn" style="background-color: #EAB308;" data-hue="48" title="Yellow"></button>
+              <button class="hue-dot-btn" style="background-color: #10B981;" data-hue="158" title="Emerald"></button>
+              <button class="hue-dot-btn" style="background-color: #06B6D4;" data-hue="188" title="Cyan"></button>
+              <button class="hue-dot-btn" style="background-color: #3B82F6;" data-hue="217" title="Blue"></button>
+              <button class="hue-dot-btn" style="background-color: #8B5CF6;" data-hue="258" title="Purple"></button>
+              <button class="hue-dot-btn" style="background-color: #EC4899;" data-hue="330" title="Pink"></button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Section 4: Color Psychology & Meaning -->
+      <section class="content-section" id="psychology">
+        <div class="section-header">
+          <div class="section-tag">Human Perception & Symbolism</div>
+          <h2 class="section-title">Color Psychology & Emotional Resonance</h2>
+          <p class="section-lead">
+            Colors trigger profound psychological responses, subconscious emotions, and cultural symbols. Click each
+            hue family to see its core associations and design applications.
+          </p>
+        </div>
+
+        <div class="psychology-grid" id="psychology-grid">
+          <!-- Cards injected via JS or semantic HTML -->
+          <div class="psych-card" data-family="red">
+            <div class="psych-swatch-header" style="background: linear-gradient(135deg, #FF416C, #FF4B2B);">
+              <span class="psych-emoji">🔥</span>
+              <h3 class="psych-color-name">Red</h3>
+            </div>
+            <div class="psych-body">
+              <div class="psych-keywords">
+                <span class="psych-kw">Passion</span>
+                <span class="psych-kw">Energy</span>
+                <span class="psych-kw">Urgency</span>
+                <span class="psych-kw">Courage</span>
+              </div>
+              <p class="psych-summary">
+                Red elevates heart rate and stimulates appetite. Commonly used in call-to-actions, sales banners, culinary brands, and emergency signals.
+              </p>
+              <div class="psych-trivia">
+                <strong>Cultural Insight:</strong> Symbol of prosperity, joy, and good fortune in China; represents purity and marriage in India.
+              </div>
+            </div>
+          </div>
+
+          <div class="psych-card" data-family="blue">
+            <div class="psych-swatch-header" style="background: linear-gradient(135deg, #2193b0, #6dd5ed);">
+              <span class="psych-emoji">🌊</span>
+              <h3 class="psych-color-name">Blue</h3>
+            </div>
+            <div class="psych-body">
+              <div class="psych-keywords">
+                <span class="psych-kw">Trust</span>
+                <span class="psych-kw">Serenity</span>
+                <span class="psych-kw">Intelligence</span>
+                <span class="psych-kw">Loyalty</span>
+              </div>
+              <p class="psych-summary">
+                The world’s most universally liked color. Blue lowers blood pressure, evokes peace, and fosters reliability. Dominates technology, finance, and corporate identities.
+              </p>
+              <div class="psych-trivia">
+                <strong>Cultural Insight:</strong> Associated with immortality in Eastern traditions and divine protection in Mediterranean folklore.
+              </div>
+            </div>
+          </div>
+
+          <div class="psych-card" data-family="green">
+            <div class="psych-swatch-header" style="background: linear-gradient(135deg, #11998e, #38ef7d);">
+              <span class="psych-emoji">🌿</span>
+              <h3 class="psych-color-name">Green</h3>
+            </div>
+            <div class="psych-body">
+              <div class="psych-keywords">
+                <span class="psych-kw">Nature</span>
+                <span class="psych-kw">Growth</span>
+                <span class="psych-kw">Health</span>
+                <span class="psych-kw">Prosperity</span>
+              </div>
+              <p class="psych-summary">
+                The easiest color on human eyes due to optical wavelength focus. Embodies renewal, sustainability, wellness, and financial security.
+              </p>
+              <div class="psych-trivia">
+                <strong>Cultural Insight:</strong> Sacred color in Islamic heritage; worldwide symbol for eco-friendliness and fertility.
+              </div>
+            </div>
+          </div>
+
+          <div class="psych-card" data-family="yellow">
+            <div class="psych-swatch-header" style="background: linear-gradient(135deg, #f7b733, #fc4a1a);">
+              <span class="psych-emoji">☀️</span>
+              <h3 class="psych-color-name">Yellow</h3>
+            </div>
+            <div class="psych-body">
+              <div class="psych-keywords">
+                <span class="psych-kw">Optimism</span>
+                <span class="psych-kw">Intellect</span>
+                <span class="psych-kw">Warmth</span>
+                <span class="psych-kw">Caution</span>
+              </div>
+              <p class="psych-summary">
+                The most luminous color in the daylight spectrum. Captures attention instantly and stimulates mental activity and creativity.
+              </p>
+              <div class="psych-trivia">
+                <strong>Cultural Insight:</strong> Imperial sacred color in ancient China; symbol of wisdom and auspicious spirituality in Buddhism.
+              </div>
+            </div>
+          </div>
+
+          <div class="psych-card" data-family="purple">
+            <div class="psych-swatch-header" style="background: linear-gradient(135deg, #8A2387, #E94057);">
+              <span class="psych-emoji">👑</span>
+              <h3 class="psych-color-name">Purple</h3>
+            </div>
+            <div class="psych-body">
+              <div class="psych-keywords">
+                <span class="psych-kw">Royalty</span>
+                <span class="psych-kw">Luxury</span>
+                <span class="psych-kw">Mystery</span>
+                <span class="psych-kw">Creativity</span>
+              </div>
+              <p class="psych-summary">
+                Historically the rarest dye to extract. Represents high status, imagination, spiritual mysticism, and premium artisanal luxury.
+              </p>
+              <div class="psych-trivia">
+                <strong>Cultural Insight:</strong> Roman Emperors passed laws making purple garments exclusive to the throne on pain of death.
+              </div>
+            </div>
+          </div>
+
+          <div class="psych-card" data-family="orange">
+            <div class="psych-swatch-header" style="background: linear-gradient(135deg, #f857a6, #ff5858);">
+              <span class="psych-emoji">🍊</span>
+              <h3 class="psych-color-name">Orange</h3>
+            </div>
+            <div class="psych-body">
+              <div class="psych-keywords">
+                <span class="psych-kw">Enthusiasm</span>
+                <span class="psych-kw">Vitality</span>
+                <span class="psych-kw">Playful</span>
+                <span class="psych-kw">Affordability</span>
+              </div>
+              <p class="psych-summary">
+                Blends the energy of red with the cheerfulness of yellow. Radiates warmth, adventure, youthfulness, and approachability.
+              </p>
+              <div class="psych-trivia">
+                <strong>Cultural Insight:</strong> Saffron robes in Hinduism and Buddhism signify renunciation, enlightenment, and quest for truth.
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Section 5: The Comprehensive Color Library (80+ Iconic Named Colors) -->
+      <section class="content-section" id="color-library">
+        <div class="section-header">
+          <div class="section-tag">Interactive Catalog</div>
+          <h2 class="section-title">The Color Encyclopedia (80+ Iconic Shades)</h2>
+          <p class="section-lead">
+            Explore curated colors across history, fashion, and digital design. Filter by classification, search by hex, or click any card for a deep dive inspection.
+          </p>
+        </div>
+
+        <!-- Filter & Search Toolbar -->
+        <div class="library-toolbar">
+          <div class="filter-group">
+            <label class="toolbar-label">Category:</label>
+            <div class="filter-pills" id="category-filter-pills">
+              <button class="filter-pill active" data-category="all">All Colors</button>
+              <button class="filter-pill" data-category="Primary">Primary</button>
+              <button class="filter-pill" data-category="Secondary">Secondary</button>
+              <button class="filter-pill" data-category="Pastel">Pastel</button>
+              <button class="filter-pill" data-category="Neon">Neon</button>
+              <button class="filter-pill" data-category="Earth Tone">Earth Tone</button>
+              <button class="filter-pill" data-category="Jewel Tone">Jewel Tone</button>
+              <button class="filter-pill" data-category="Neutral">Neutral</button>
+              <button class="filter-pill" data-category="Historic">Historic</button>
+            </div>
+          </div>
+
+          <div class="filter-sub-row">
+            <div class="family-filter-group">
+              <label class="toolbar-label">Hue Family:</label>
+              <select id="family-select" class="custom-select" aria-label="Filter by color family">
+                <option value="all">All Hues</option>
+                <option value="red">Reds & Corals</option>
+                <option value="blue">Blues & Cyans</option>
+                <option value="green">Greens & Mints</option>
+                <option value="yellow">Yellows & Golds</option>
+                <option value="purple">Purples & Violets</option>
+                <option value="orange">Oranges & Peaches</option>
+                <option value="pink">Pinks & Magentas</option>
+                <option value="neutral">Neutrals & Monochromes</option>
+              </select>
+            </div>
+
+            <div class="library-search-wrap">
+              <input type="text" id="library-search-input" placeholder="Search color name or hex code..." aria-label="Search color library">
+              <span class="results-counter" id="results-count">Showing 84 colors</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Dynamic Color Grid -->
+        <div class="color-cards-grid" id="color-cards-container">
+          <!-- Populated dynamically via app.js -->
+        </div>
+      </section>
+
+      <!-- Section 6: Curated Mood Palettes Studio -->
+      <section class="content-section" id="palette-studio">
+        <div class="section-header">
+          <div class="section-tag">Inspiration Studio</div>
+          <h2 class="section-title">Designer Mood Palettes</h2>
+          <p class="section-lead">
+            Curated color palettes mapped to aesthetic design moods. Click any color strip to copy its hex code, or
+            test it on the live mock UI.
+          </p>
+        </div>
+
+        <div class="mood-palettes-grid" id="mood-palettes-grid">
+          <!-- Rendered via JS -->
         </div>
       </section>
     </main>
 
-    <!-- Footer with subtle links & info -->
-    <footer class="app-footer">
-      <p>Built with semantic HTML5, modern CSS3 & JavaScript &bull; <span id="current-year"></span></p>
-    </footer>
-  </div>
+    <!-- Deep Dive Color Inspector Modal -->
+    <div class="modal-backdrop" id="color-modal" aria-hidden="true" role="dialog" aria-labelledby="modal-color-name">
+      <div class="modal-card">
+        <button class="modal-close-btn" id="btn-close-modal" aria-label="Close modal">✕</button>
 
-  <!-- Toast notification -->
-  <div class="toast-container" id="toast" role="alert" aria-live="polite">
-    <span class="toast-icon">✓</span>
-    <span class="toast-message" id="toast-message">Copied to clipboard!</span>
+        <div class="modal-swatch-header" id="modal-swatch-banner" style="background-color: #6366F1;">
+          <div class="modal-swatch-text-preview" id="modal-text-preview">
+            <span class="preview-badge" id="modal-contrast-badge">WCAG AAA &bull; High Contrast</span>
+            <h2 class="modal-title-display" id="modal-color-name">Ultramarine</h2>
+            <p class="modal-tagline" id="modal-color-tagline">Deep Historic Blue</p>
+          </div>
+        </div>
+
+        <div class="modal-content-body">
+          <!-- Codes Strip -->
+          <div class="modal-codes-grid">
+            <div class="modal-code-pill" id="modal-code-hex" data-copy="">
+              <span class="code-label">HEX</span>
+              <span class="code-val" id="modal-val-hex">#120A8F</span>
+              <span class="copy-hint">Copy</span>
+            </div>
+            <div class="modal-code-pill" id="modal-code-rgb" data-copy="">
+              <span class="code-label">RGB</span>
+              <span class="code-val" id="modal-val-rgb">rgb(18, 10, 143)</span>
+              <span class="copy-hint">Copy</span>
+            </div>
+            <div class="modal-code-pill" id="modal-code-hsl" data-copy="">
+              <span class="code-label">HSL</span>
+              <span class="code-val" id="modal-val-hsl">hsl(244, 87%, 30%)</span>
+              <span class="copy-hint">Copy</span>
+            </div>
+            <div class="modal-code-pill" id="modal-code-cmyk" data-copy="">
+              <span class="code-label">CMYK</span>
+              <span class="code-val" id="modal-val-cmyk">87%, 93%, 0%, 44%</span>
+              <span class="copy-hint">Copy</span>
+            </div>
+          </div>
+
+          <!-- Color Story & Psychology -->
+          <div class="modal-info-block">
+            <h4 class="modal-heading">Psychological Vibe & Meaning</h4>
+            <p class="modal-desc-text" id="modal-psych-text">
+              Evokes wisdom, deep truth, spiritual serenity, and commanding authority.
+            </p>
+          </div>
+
+          <div class="modal-info-block">
+            <h4 class="modal-heading">Historical Origin & Trivia</h4>
+            <p class="modal-desc-text" id="modal-history-text">
+              Originates from Latin 'ultramarinus' meaning 'beyond the sea' because it was imported from Afghanistan mines.
+            </p>
+          </div>
+
+          <!-- Tints & Shades Generator Strip -->
+          <div class="modal-info-block">
+            <h4 class="modal-heading">Tints, Tones & Shades Spectrum</h4>
+            <div class="spectrum-swatch-row" id="modal-spectrum-row">
+              <!-- Dynamically generated swatches -->
+            </div>
+          </div>
+
+          <!-- Recommended Pairings -->
+          <div class="modal-info-block">
+            <h4 class="modal-heading">Recommended Harmonious Pairings</h4>
+            <div class="pairing-swatches-row" id="modal-pairings-row">
+              <!-- Dynamically generated pairings -->
+            </div>
+          </div>
+
+          <!-- Modal Action Bar -->
+          <div class="modal-actions-footer">
+            <button class="modal-btn-theme" id="btn-modal-set-theme">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="5"></circle>
+                <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"></path>
+              </svg>
+              Set Site Ambient Glow to this Color
+            </button>
+            <button class="modal-btn-close" id="btn-modal-close-footer">Done</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div class="toast-bubble" id="toast" role="alert" aria-live="polite">
+      <span class="toast-check">✓</span>
+      <span class="toast-text" id="toast-text">Color code copied to clipboard!</span>
+    </div>
+
+    <!-- Footer -->
+    <footer class="site-footer">
+      <div class="footer-container">
+        <div class="footer-brand">
+          <div class="logo-mark small">
+            <span class="logo-dot dot-red"></span>
+            <span class="logo-dot dot-yellow"></span>
+            <span class="logo-dot dot-blue"></span>
+            <span class="logo-dot dot-green"></span>
+          </div>
+          <span class="footer-brand-title">Chromatica Color Guide</span>
+        </div>
+        <p class="footer-note">
+          An interactive, comprehensive study of colors, optics, harmony systems, and emotional psychology.
+        </p>
+        <p class="footer-copy">
+          Designed with semantic HTML5, pure Vanilla CSS, and modern JavaScript &bull; <span id="current-year"></span>
+        </p>
+      </div>
+    </footer>
   </div>
 
   <script src="app.js"></script>
