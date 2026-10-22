@@ -1,1379 +1,1748 @@
 /**
- * Chromatica — Interactive Color Encyclopedia & Theory Guide
- * Pure Vanilla JavaScript: Real-time Color Math, Harmony Engines, Filtering & Deep Dive Inspector
+ * Human Body Explorer — Master Application Controller
+ * Fully interactive anatomy atlas, process visualizer, comparison engine, quiz center, and search.
  */
 
-document.addEventListener('DOMContentLoaded', () => {
-  // ==========================================================================
-  // 1. Comprehensive Named Colors Database (80+ Curated Historic & Modern Shades)
-  // ==========================================================================
-  const COLOR_DATABASE = [
-    // --- REDS & CRIMSONS ---
-    {
-      id: 'ultramarine',
-      name: 'Ultramarine',
-      hex: '#120A8F',
-      family: 'blue',
-      category: 'Historic',
-      temperature: 'Cool',
-      meaning: 'Deep spiritual wisdom, infinite expanse, and regal dignity.',
-      history: 'Originally ground from lapis lazuli imported from Afghanistan. Renaissance painters reserved it exclusively for the robes of the Virgin Mary, often costing more than gold.',
-      bestPairing: ['#FFD700', '#F4F1DE', '#E07A5F', '#3D405B']
-    },
-    {
-      id: 'crimson',
-      name: 'Crimson',
-      hex: '#DC143C',
-      family: 'red',
-      category: 'Primary',
-      temperature: 'Warm',
-      meaning: 'Audacious passion, royalty, romantic fury, and dynamic energy.',
-      history: 'Derived from ancient Mediterranean scale insect parasites (kermes). Mentioned in ancient Hebrew texts as a sacred ceremonial dye for holy tabernacles.',
-      bestPairing: ['#F4F1DE', '#1D3557', '#457B9D', '#E63946']
-    },
-    {
-      id: 'carmine',
-      name: 'Carmine',
-      hex: '#960018',
-      family: 'red',
-      category: 'Historic',
-      temperature: 'Warm',
-      meaning: 'Opulence, dramatic theatricality, and vintage luxury.',
-      history: 'Introduced to Europe from the Aztec empire in the 1500s. Produced from dried cochineal bugs that feed on prickly pear cacti in Oaxaca, Mexico.',
-      bestPairing: ['#FFD700', '#F7E7CE', '#2B2D42', '#8D99AE']
-    },
-    {
-      id: 'vermilion',
-      name: 'Vermilion',
-      hex: '#E34234',
-      family: 'red',
-      category: 'Secondary',
-      temperature: 'Warm',
-      meaning: 'Vitality, spiritual purification, celebration, and victory.',
-      history: 'Traditionally synthesized from cinnabar (toxic mercury sulfide). Ancient Roman aristocrats used it for frescoes in Pompeii, and Chinese Taoist alchemists regarded it as the elixir of immortality.',
-      bestPairing: ['#0A192F', '#F4E8C1', '#2A9D8F', '#E76F51']
-    },
-    {
-      id: 'ruby',
-      name: 'Ruby',
-      hex: '#E0115F',
-      family: 'red',
-      category: 'Jewel Tone',
-      temperature: 'Warm',
-      meaning: 'Vital life force, eternal devotion, and majestic nobility.',
-      history: 'Named after the corundum gemstone. In ancient Sanskrit, rubies were called "Ratnaraj" or "the King of Precious Stones".',
-      bestPairing: ['#1B1B1E', '#EAEAEA', '#0077B6', '#F72585']
-    },
-    {
-      id: 'burgundy',
-      name: 'Burgundy',
-      hex: '#800020',
-      family: 'red',
-      category: 'Jewel Tone',
-      temperature: 'Warm',
-      meaning: 'Refinement, academic prestige, quiet sophistication, and vintage maturity.',
-      history: 'Takes its name from the deep red wine of the Burgundy region in eastern France. Popularized in high-society garments in late 19th-century Europe.',
-      bestPairing: ['#C5A059', '#F8F9FA', '#2B2D42', '#3F4238']
-    },
-    {
-      id: 'coral',
-      name: 'Living Coral',
-      hex: '#FF6F61',
-      family: 'orange',
-      category: 'Pastel',
-      temperature: 'Warm',
-      meaning: 'Playful warmth, sociable optimism, and marine biodiversity.',
-      history: 'Named Pantone Color of the Year in 2019 to honor delicate underwater coral reefs threatened by ocean temperature changes.',
-      bestPairing: ['#007791', '#F4F1DE', '#3D405B', '#E07A5F']
-    },
-    {
-      id: 'terracotta',
-      name: 'Terracotta',
-      hex: '#E2725B',
-      family: 'orange',
-      category: 'Earth Tone',
-      temperature: 'Warm',
-      meaning: 'Grounded authenticity, hearth comfort, artisanal craft, and Mediterranean warmth.',
-      history: 'Italian for "baked earth". Used continuously for over 5,000 years, from the Emperor Qin Shi Huang’s Terracotta Army in China to Tuscan roof tiles.',
-      bestPairing: ['#2F4F4F', '#F5F5DC', '#A0522D', '#D2B48C']
-    },
+(function () {
+  'use strict';
 
-    // --- BLUES & CYANS ---
-    {
-      id: 'cobalt',
-      name: 'Cobalt Blue',
-      hex: '#0047AB',
-      family: 'blue',
-      category: 'Historic',
-      temperature: 'Cool',
-      meaning: 'Clarity, profound concentration, divine truth, and industrial precision.',
-      history: 'Formulated in 1802 by French chemist Louis Jacques Thénard as an affordable alternative to ultramarine. Favored heavily by Vincent van Gogh and Pierre-Auguste Renoir.',
-      bestPairing: ['#FFB703', '#FB8500', '#023047', '#8ECAE6']
+  // State Management
+  const state = {
+    currentView: 'front', // 'front' | 'back'
+    currentSystemFilter: 'all',
+    selectedOrganId: 'heart',
+    currentProcessId: 'cardiac-cycle',
+    currentProcessStep: 0,
+    currentComparisonId: 'arteries-vs-veins',
+    quiz: {
+      filteredQuestions: [],
+      currentIndex: 0,
+      score: 0,
+      answered: false
     },
-    {
-      id: 'cerulean',
-      name: 'Cerulean',
-      hex: '#007BA7',
-      family: 'blue',
-      category: 'Primary',
-      temperature: 'Cool',
-      meaning: 'Panoramic tranquility, open horizons, mental lucidity, and eternal calm.',
-      history: 'From the Latin "caeruleum" (sky/heavens). Synthesized in 1860 with cobaltous stannate. Famous in fashion lore from Miranda Priestly’s monologue in The Devil Wears Prada.',
-      bestPairing: ['#F4A261', '#E76F51', '#264653', '#E9C46A']
-    },
-    {
-      id: 'tiffany',
-      name: 'Tiffany Blue',
-      hex: '#0ABAB5',
-      family: 'blue',
-      category: 'Jewel Tone',
-      temperature: 'Cool',
-      meaning: 'Elegance, celebration, elite exclusivity, and romantic anticipation.',
-      history: 'Chosen by Charles Lewis Tiffany in 1845 for the cover of Tiffany’s Blue Book. It is legally trademarked in many countries as Pantone 1837.',
-      bestPairing: ['#FFFFFF', '#D4AF37', '#2F3E46', '#CAD2C5']
-    },
-    {
-      id: 'prussian',
-      name: 'Prussian Blue',
-      hex: '#003153',
-      family: 'blue',
-      category: 'Historic',
-      temperature: 'Cool',
-      meaning: 'Austere authority, maritime melancholy, and intellectual depth.',
-      history: 'Accidentally discovered in Berlin around 1706 by paint maker Johann Jacob Diesbach when trying to make red. Used extensively in Hokusai’s The Great Wave off Kanagawa.',
-      bestPairing: ['#F3E9D2', '#C6A969', '#536B78', '#63C7B2']
-    },
-    {
-      id: 'navy',
-      name: 'Royal Navy',
-      hex: '#000080',
-      family: 'blue',
-      category: 'Neutral',
-      temperature: 'Cool',
-      meaning: 'Unwavering loyalty, administrative trust, order, and tradition.',
-      history: 'Adopted in 1748 as the official uniform color for officers in the British Royal Navy, eventually becoming a worldwide staple of formal corporate attire.',
-      bestPairing: ['#FFFFFF', '#FFD166', '#EF476F', '#06D6A0']
-    },
-    {
-      id: 'cyan',
-      name: 'Electric Cyan',
-      hex: '#00FFFF',
-      family: 'blue',
-      category: 'Neon',
-      temperature: 'Cool',
-      meaning: 'Hyper-digital connectivity, electric velocity, futuristic cyberspace.',
-      history: 'One of the primary subtractive colors in the CMYK print system and a foundational primary of additive RGB screen displays.',
-      bestPairing: ['#FF0055', '#1A0B2E', '#7B2CBF', '#FFE600']
-    },
-    {
-      id: 'indigo',
-      name: 'Indigo',
-      hex: '#4B0082',
-      family: 'blue',
-      category: 'Tertiary',
-      temperature: 'Cool',
-      meaning: 'Deep intuition, mystical perception, nocturnal solace, and inner stillness.',
-      history: 'Extracted from the Indigofera tinctoria plant. Sir Isaac Newton included indigo in his 7-color optical rainbow to match the seven notes in a musical scale.',
-      bestPairing: ['#F7B267', '#F79D65', '#F4845F', '#F27059']
-    },
-    {
-      id: 'periwinkle',
-      name: 'Periwinkle',
-      hex: '#CCCCFF',
-      family: 'blue',
-      category: 'Pastel',
-      temperature: 'Cool',
-      meaning: 'Whimsical tenderness, dreamy nostalgia, and peaceful calm.',
-      history: 'Named after the flowering periwinkle myrtle herb (Vinca minor). Serves as a soothing bridge hue blending lavender and baby sky blue.',
-      bestPairing: ['#2F3E46', '#354F52', '#52796F', '#84A98C']
-    },
-
-    // --- GREENS & MINTS ---
-    {
-      id: 'emerald',
-      name: 'Emerald Green',
-      hex: '#50C878',
-      family: 'green',
-      category: 'Jewel Tone',
-      temperature: 'Cool',
-      meaning: 'Abundance, lush rejuvenation, regal fertility, and financial prosperity.',
-      history: 'Synthesized in the 1800s as Schweinfurt green using copper acetoarsenite. Despite its toxic arsenic content, it was famously used on Victorian wallpaper and ballgowns.',
-      bestPairing: ['#D4AF37', '#0F172A', '#F8FAFC', '#94A3B8']
-    },
-    {
-      id: 'sage',
-      name: 'Sage Green',
-      hex: '#9DC183',
-      family: 'green',
-      category: 'Earth Tone',
-      temperature: 'Neutral',
-      meaning: 'Holistic wellness, mindful equilibrium, organic herbal calm.',
-      history: 'Derived from the dried culinary and medicinal herb salvia. Widely celebrated in Scandinavian interior design and eco-conscious minimalism.',
-      bestPairing: ['#FAF0CA', '#0D3B66', '#EE964B', '#F95738']
-    },
-    {
-      id: 'chartreuse',
-      name: 'Chartreuse',
-      hex: '#7FFF00',
-      family: 'green',
-      category: 'Secondary',
-      temperature: 'Warm',
-      meaning: 'Unconventional energy, youth, electric eccentricity, and sharp wit.',
-      history: 'Named after the herbal French liqueur distilled since 1737 by Carthusian monks from a secret recipe of 130 botanical herbs and spices.',
-      bestPairing: ['#2B2D42', '#8D99AE', '#D90429', '#EDF2F4']
-    },
-    {
-      id: 'forest',
-      name: 'Forest Green',
-      hex: '#228B22',
-      family: 'green',
-      category: 'Earth Tone',
-      temperature: 'Cool',
-      meaning: 'Ancestral woodland majesty, biological continuity, endurance, and fortitude.',
-      history: 'Long associated with the medieval folklore of Robin Hood’s Lincoln Green woolen garments worn in Sherwood Forest.',
-      bestPairing: ['#E9D8A6', '#EE9B00', '#CA6702', '#BB3E03']
-    },
-    {
-      id: 'olive',
-      name: 'Olive Drab',
-      hex: '#808000',
-      family: 'green',
-      category: 'Neutral',
-      temperature: 'Warm',
-      meaning: 'Utilitarian resilience, tactical discipline, and rustic peace.',
-      history: 'Associated since antiquity with the olive branch as an international emblem of peace. In 1941, it became the standard combat uniform shade of the US Armed Forces.',
-      bestPairing: ['#F5EBE0', '#E3D5CA', '#D5BDAF', '#4A4E69']
-    },
-    {
-      id: 'mint',
-      name: 'Fresh Mint',
-      hex: '#3EB489',
-      family: 'green',
-      category: 'Pastel',
-      temperature: 'Cool',
-      meaning: 'Crisp refreshment, clean renewal, youthful sparkle, and spring vitality.',
-      history: 'Became an iconic Art Deco and Mid-Century Modern kitchenware hallmark in 1950s American diners and vintage appliances.',
-      bestPairing: ['#FFCAD4', '#B5838D', '#6D6875', '#E5989B']
-    },
-    {
-      id: 'jade',
-      name: 'Imperial Jade',
-      hex: '#00A86B',
-      family: 'green',
-      category: 'Jewel Tone',
-      temperature: 'Cool',
-      meaning: 'Supreme virtue, celestial harmony, immortality, and good fortune.',
-      history: 'Prized above diamonds and gold in imperial China for 5,000 years. Confucius compared its smoothness to benevolence and its hardness to wisdom.',
-      bestPairing: ['#C5A059', '#1C1917', '#F5F5F4', '#78716C']
-    },
-    {
-      id: 'neon-green',
-      name: 'Cyber Neon Green',
-      hex: '#39FF14',
-      family: 'green',
-      category: 'Neon',
-      temperature: 'Warm',
-      meaning: 'High-voltage excitement, algorithmic disruption, radioactive warning.',
-      history: 'Pioneered with phosphorescent and fluorescent pigments in the 1960s, later becoming the hallmark of rave culture and 90s cyber aesthetics.',
-      bestPairing: ['#000000', '#7928CA', '#FF0080', '#00DFD8']
-    },
-
-    // --- YELLOWS & GOLDS ---
-    {
-      id: 'amber',
-      name: 'Amber',
-      hex: '#FFBF00',
-      family: 'yellow',
-      category: 'Tertiary',
-      temperature: 'Warm',
-      meaning: 'Glowing warmth, protective nostalgia, fossilized timelessness, and radiance.',
-      history: 'Named after fossilized tree resin containing ancient insect inclusions. Prized along the prehistoric Amber Road trading routes across the Baltic Sea.',
-      bestPairing: ['#03071E', '#370617', '#6A040F', '#9D0208']
-    },
-    {
-      id: 'ochre',
-      name: 'Yellow Ochre',
-      hex: '#CC7722',
-      family: 'yellow',
-      category: 'Earth Tone',
-      temperature: 'Warm',
-      meaning: 'Primitive grounding, sunlight on clay, primal human expression.',
-      history: 'The oldest known artistic pigment used by humanity. Discovered in Neanderthal and early Homo sapiens cave paintings dating back over 300,000 years.',
-      bestPairing: ['#264653', '#2A9D8F', '#E76F51', '#F4A261']
-    },
-    {
-      id: 'saffron',
-      name: 'Saffron',
-      hex: '#F4C430',
-      family: 'yellow',
-      category: 'Historic',
-      temperature: 'Warm',
-      meaning: 'Spiritual detachment, enlightenment, solar sanctity, and auspicious blessing.',
-      history: 'Harvested from the crimson stigmas of Crocus sativus flowers. Sacred in Hinduism, Buddhism, and Sikhism; symbolizes purity and the quest for spiritual truth.',
-      bestPairing: ['#581845', '#900C3F', '#C70039', '#FF5733']
-    },
-    {
-      id: 'gold',
-      name: 'Imperial Gold',
-      hex: '#FFD700',
-      family: 'yellow',
-      category: 'Jewel Tone',
-      temperature: 'Warm',
-      meaning: 'Supreme excellence, divine glory, eternal value, and triumphant victory.',
-      history: 'Revered across every ancient civilization as the sweat of the sun. Unlike other metals, pure gold never tarnishes, rusts, or corrodes over millennia.',
-      bestPairing: ['#0B0C10', '#1F2833', '#C5C6C7', '#45A29E']
-    },
-    {
-      id: 'mustard',
-      name: 'Dijon Mustard',
-      hex: '#FFDB58',
-      family: 'yellow',
-      category: 'Secondary',
-      temperature: 'Warm',
-      meaning: 'Vintage eccentricity, culinary spice, 1970s retro style, and cozy warmth.',
-      history: 'Gained international prominence during the 1970s Mid-Century interiors boom and remains a cornerstone of bohemian, vintage graphic design.',
-      bestPairing: ['#2E4057', '#048A81', '#44355B', '#ECA72C']
-    },
-    {
-      id: 'lemon',
-      name: 'Lemon Chiffon',
-      hex: '#FFFACD',
-      family: 'yellow',
-      category: 'Pastel',
-      temperature: 'Warm',
-      meaning: 'Gentle morning light, tender optimism, delicacy, and buoyant cheer.',
-      history: 'A beloved pastel palette staple often used in nursery decor, spring stationery, and French patisserie branding.',
-      bestPairing: ['#5B5F97', '#FFC145', '#FF6B6B', '#4ECDC4']
-    },
-
-    // --- PURPLES & VIOLETS ---
-    {
-      id: 'tyrian',
-      name: 'Tyrian Purple',
-      hex: '#66023C',
-      family: 'purple',
-      category: 'Historic',
-      temperature: 'Cool',
-      meaning: 'Imperial hegemony, sacred majesty, and autocratic supremacy.',
-      history: 'Harvested by the Phoenicians in Tyre from tens of thousands of decomposing predatory sea snails (Bolinus brandaris). Only Roman emperors were permitted to wear full robes in this hue.',
-      bestPairing: ['#FFD700', '#F5F5DC', '#3E2723', '#D7CCC8']
-    },
-    {
-      id: 'amethyst',
-      name: 'Amethyst',
-      hex: '#9966CC',
-      family: 'purple',
-      category: 'Jewel Tone',
-      temperature: 'Cool',
-      meaning: 'Clear-minded intuition, sobriety, psychic tranquility, and metaphysical balance.',
-      history: 'From the Greek "a-methystos" meaning "not intoxicated"—ancient Greeks believed drinking wine from carved amethyst chalices prevented drunkenness.',
-      bestPairing: ['#2B2D42', '#8D99AE', '#EDF2F4', '#EF233C']
-    },
-    {
-      id: 'lavender',
-      name: 'French Lavender',
-      hex: '#E6E6FA',
-      family: 'purple',
-      category: 'Pastel',
-      temperature: 'Cool',
-      meaning: 'Aromatic serenity, restful slumber, delicate grace, and poetic grace.',
-      history: 'Named after the fragrant purple herb grown abundantly in the rolling hills of Provence, France. Prized since Roman times for perfuming bath waters.',
-      bestPairing: ['#2F3E46', '#354F52', '#52796F', '#84A98C']
-    },
-    {
-      id: 'mauve',
-      name: 'Mauve',
-      hex: '#E0B0FF',
-      family: 'purple',
-      category: 'Historic',
-      temperature: 'Cool',
-      meaning: 'Sentimental romance, Victorian vintage charm, and delicate whimsy.',
-      history: 'The color that launched the modern synthetic dye industry. Discovered by 18-year-old William Henry Perkin in 1856 while attempting to synthesize malaria medication.',
-      bestPairing: ['#3A506B', '#1C2541', '#0B132B', '#5BC0BE']
-    },
-    {
-      id: 'magenta',
-      name: 'Electric Magenta',
-      hex: '#FF00FF',
-      family: 'purple',
-      category: 'Neon',
-      temperature: 'Warm',
-      meaning: 'Non-conformity, emotional transformation, boundless imagination, and rebellion.',
-      history: 'Extra-spectral color—it has no single wavelength of light and only exists because the brain combines red and blue optical cone stimulation.',
-      bestPairing: ['#00F5D4', '#7B2CBF', '#00BBF9', '#FEE440']
-    },
-    {
-      id: 'plum',
-      name: 'Velvet Plum',
-      hex: '#8E4585',
-      family: 'purple',
-      category: 'Jewel Tone',
-      temperature: 'Cool',
-      meaning: 'Sensual luxury, autumn harvest richness, mystery, and cozy depth.',
-      history: 'Favored in velvet drapes and Renaissance garments to evoke harvest bounty and sumptuous domestic warmth.',
-      bestPairing: ['#F3E9D2', '#C6A969', '#536B78', '#63C7B2']
-    },
-
-    // --- ORANGES & PEACHES ---
-    {
-      id: 'tangerine',
-      name: 'Tangerine',
-      hex: '#F28500',
-      family: 'orange',
-      category: 'Secondary',
-      temperature: 'Warm',
-      meaning: 'Spontaneous joy, athletic enthusiasm, citric zest, and extroverted charisma.',
-      history: 'Named after the citrus fruit exported through the historic Moroccan port city of Tangier to Europe during the 19th century.',
-      bestPairing: ['#0A2540', '#635BFF', '#00D4FF', '#FFFFFF']
-    },
-    {
-      id: 'peach',
-      name: 'Peach Echo',
-      hex: '#FFE5B4',
-      family: 'orange',
-      category: 'Pastel',
-      temperature: 'Warm',
-      meaning: 'Gentle empathy, sweet approachability, innocence, and summer softness.',
-      history: 'Derived from the velvet skin of the peach fruit. Historically in Chinese art, the peach symbolizes longevity and immortality in Taoist mythology.',
-      bestPairing: ['#4A4E69', '#9A8C98', '#C9ADA7', '#F2E9E4']
-    },
-    {
-      id: 'rust',
-      name: 'Industrial Rust',
-      hex: '#B7410E',
-      family: 'orange',
-      category: 'Earth Tone',
-      temperature: 'Warm',
-      meaning: 'Weathered endurance, industrial grit, autumn foliage, and rustic craft.',
-      history: 'Formed naturally by the chemical oxidation of iron metal exposed to moisture and oxygen. A staple of modern architectural Corten steel.',
-      bestPairing: ['#2F4F4F', '#D2B48C', '#E0EEE0', '#708090']
-    },
-    {
-      id: 'marigold',
-      name: 'Marigold',
-      hex: '#EAA221',
-      family: 'orange',
-      category: 'Secondary',
-      temperature: 'Warm',
-      meaning: 'Festive devotion, ancestral remembrance, radiant hospitality, and optimism.',
-      history: 'Central flower in the Mexican celebration of Día de los Muertos (cempasúchil) guiding wandering souls with its intense scent and luminous petals.',
-      bestPairing: ['#1B4332', '#2D6A4F', '#40916C', '#52B788']
-    },
-
-    // --- PINKS & ROSES ---
-    {
-      id: 'millennial-pink',
-      name: 'Millennial Pink',
-      hex: '#F3CFC6',
-      family: 'pink',
-      category: 'Pastel',
-      temperature: 'Warm',
-      meaning: 'Androgynous calm, ironic nostalgia, modern minimalism, and gentle tactility.',
-      history: 'The defining cultural color trend of the mid-2010s, embraced across fashion, tech branding (Rose Gold iPhone), and interior design worldwide.',
-      bestPairing: ['#2E4057', '#048A81', '#F4D35E', '#EE964B']
-    },
-    {
-      id: 'cyber-pink',
-      name: 'Cyberpunk Pink',
-      hex: '#FF007F',
-      family: 'pink',
-      category: 'Neon',
-      temperature: 'Warm',
-      meaning: 'Dystopian neon glow, underground nightlife, relentless rebellion, and hyper-pop.',
-      history: 'The definitive signature color of cyberpunk science fiction cinema and retro synthwave aesthetic album covers.',
-      bestPairing: ['#080811', '#00F0FF', '#FFE600', '#7B2CBF']
-    },
-    {
-      id: 'blush',
-      name: 'Blush Rose',
-      hex: '#DE5D83',
-      family: 'pink',
-      category: 'Pastel',
-      temperature: 'Warm',
-      meaning: 'Flirtatious affection, emotional vulnerability, romantic charm, and grace.',
-      history: 'Takes its inspiration from the spontaneous rush of blood to human cheeks during moments of modesty or romantic excitement.',
-      bestPairing: ['#2F3E46', '#354F52', '#52796F', '#84A98C']
-    },
-
-    // --- NEUTRALS, METALS & MONOCHROMES ---
-    {
-      id: 'charcoal',
-      name: 'Charcoal',
-      hex: '#36454F',
-      family: 'neutral',
-      category: 'Neutral',
-      temperature: 'Neutral',
-      meaning: 'Executive authority, quiet strength, timeless stability, and industrial poise.',
-      history: 'Made from burnt carbonized wood used as our ancestors’ earliest drawing chalk on prehistoric cave walls before brush technology existed.',
-      bestPairing: ['#F8F9FA', '#E9ECEF', '#CED4DA', '#6C757D']
-    },
-    {
-      id: 'ivory',
-      name: 'Ivory',
-      hex: '#FFFFF0',
-      family: 'neutral',
-      category: 'Neutral',
-      temperature: 'Warm',
-      meaning: 'Purity, quiet elegance, heritage craftsmanship, and pristine dignity.',
-      history: 'Historically sourced from elephant and walrus tusk carvings. Now widely emulated through sustainable cruelty-free mineral formulations.',
-      bestPairing: ['#1C2541', '#3A506B', '#0B132B', '#5BC0BE']
-    },
-    {
-      id: 'slate',
-      name: 'Slate Gray',
-      hex: '#708090',
-      family: 'neutral',
-      category: 'Neutral',
-      temperature: 'Cool',
-      meaning: 'Architectural stoicism, geological endurance, calm neutrality, and balance.',
-      history: 'Named after the metamorphic rock quarried in Wales and New England for durable roofing shingles and school blackboards.',
-      bestPairing: ['#FF6B6B', '#FFE66D', '#4ECDC4', '#F7FFF7']
-    },
-    {
-      id: 'obsidian',
-      name: 'Obsidian Black',
-      hex: '#0B0B0E',
-      family: 'neutral',
-      category: 'Neutral',
-      temperature: 'Neutral',
-      meaning: 'Infinite mystery, modern luxury, razor focus, and protective shielding.',
-      history: 'Volcanic glass formed by rapidly cooled felsic lava. Mesoamerican warriors crafted lethal obsidian blades sharper than surgical steel scalpels.',
-      bestPairing: ['#FFFFFF', '#FFD700', '#6366F1', '#06B6D4']
-    },
-    {
-      id: 'champagne',
-      name: 'Champagne Gold',
-      hex: '#F7E7CE',
-      family: 'neutral',
-      category: 'Pastel',
-      temperature: 'Warm',
-      meaning: 'Jubilant celebration, effervescent joy, bespoke luxury, and refined ease.',
-      history: 'Named after the sparkling effervescent wine created in the chalk-rich cellars of the Champagne region of northeastern France.',
-      bestPairing: ['#2F3E46', '#354F52', '#52796F', '#84A98C']
-    },
-    {
-      id: 'taupe',
-      name: 'Taupe',
-      hex: '#483C32',
-      family: 'neutral',
-      category: 'Earth Tone',
-      temperature: 'Neutral',
-      meaning: 'Unpretentious elegance, grounded neutrality, organic timber, and calm comfort.',
-      history: 'Originates from the French word for "mole" (the mammal), describing its soft, grayish-brown subterranean fur.',
-      bestPairing: ['#F4F1DE', '#E07A5F', '#3D405B', '#81B29A']
-    },
-    {
-      id: 'copper',
-      name: 'Burnished Copper',
-      hex: '#B87333',
-      family: 'orange',
-      category: 'Earth Tone',
-      temperature: 'Warm',
-      meaning: 'Conductive warmth, metallurgical ingenuity, domestic hearth, and rustic beauty.',
-      history: 'One of the very few metallic elements that occurs naturally in an directly usable metallic form, opening the Copper Age 10,000 years ago.',
-      bestPairing: ['#005F73', '#0A9396', '#94D2BD', '#E9D8A6']
-    },
-    {
-      id: 'titanium',
-      name: 'Titanium White',
-      hex: '#FDFBF7',
-      family: 'neutral',
-      category: 'Primary',
-      temperature: 'Neutral',
-      meaning: 'Absolute luminosity, clinical perfection, non-toxic brilliance, and fresh beginning.',
-      history: 'Introduced around 1921 to permanently replace poisonous lead white paint, providing the most opaque, brilliant white pigment on Earth.',
-      bestPairing: ['#0F172A', '#334155', '#64748B', '#94A3B8']
-    }
-  ];
-
-  // ==========================================================================
-  // 2. Color Science & Mathematical Conversion Engines
-  // ==========================================================================
-
-  /**
-   * Converts 3-digit or 6-digit hex string to RGB object {r, g, b}
-   */
-  function hexToRgb(hex) {
-    let cleanHex = hex.replace('#', '').trim();
-    if (cleanHex.length === 3) {
-      cleanHex = cleanHex.split('').map(c => c + c).join('');
-    }
-    const num = parseInt(cleanHex, 16);
-    if (isNaN(num) || cleanHex.length !== 6) {
-      return { r: 99, g: 102, b: 241 }; // fallback to default accent
-    }
-    return {
-      r: (num >> 16) & 255,
-      g: (num >> 8) & 255,
-      b: num & 255
-    };
-  }
-
-  /**
-   * Converts RGB {r, g, b} to 6-digit uppercase HEX string
-   */
-  function rgbToHex(r, g, b) {
-    const clamp = (val) => Math.max(0, Math.min(255, Math.round(val)));
-    const toHex = (n) => clamp(n).toString(16).padStart(2, '0').toUpperCase();
-    return `#${toHex(r)}${toHex(g)}${toHex(b)}`;
-  }
-
-  /**
-   * Converts RGB to HSL {h, s, l}
-   */
-  function rgbToHsl(r, g, b) {
-    r /= 255;
-    g /= 255;
-    b /= 255;
-    const max = Math.max(r, g, b);
-    const min = Math.min(r, g, b);
-    let h, s, l = (max + min) / 2;
-
-    if (max === min) {
-      h = s = 0; // achromatic
-    } else {
-      const d = max - min;
-      s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
-      switch (max) {
-        case r: h = (g - b) / d + (g < b ? 6 : 0); break;
-        case g: h = (b - r) / d + 2; break;
-        case b: h = (r - g) / d + 4; break;
-      }
-      h /= 6;
-    }
-    return {
-      h: Math.round(h * 360),
-      s: Math.round(s * 100),
-      l: Math.round(l * 100)
-    };
-  }
-
-  /**
-   * Converts HSL to RGB {r, g, b}
-   */
-  function hslToRgb(h, s, l) {
-    h = ((h % 360) + 360) % 360;
-    s /= 100;
-    l /= 100;
-
-    const c = (1 - Math.abs(2 * l - 1)) * s;
-    const x = c * (1 - Math.abs(((h / 60) % 2) - 1));
-    const m = l - c / 2;
-    let r = 0, g = 0, b = 0;
-
-    if (h < 60) { r = c; g = x; b = 0; }
-    else if (h < 120) { r = x; g = c; b = 0; }
-    else if (h < 180) { r = 0; g = c; b = x; }
-    else if (h < 240) { r = 0; g = x; b = c; }
-    else if (h < 300) { r = x; g = 0; b = c; }
-    else { r = c; g = 0; b = x; }
-
-    return {
-      r: Math.round((r + m) * 255),
-      g: Math.round((g + m) * 255),
-      b: Math.round((b + m) * 255)
-    };
-  }
-
-  /**
-   * Converts RGB to CMYK estimated {c, m, y, k}
-   */
-  function rgbToCmyk(r, g, b) {
-    const cVal = 1 - (r / 255);
-    const mVal = 1 - (g / 255);
-    const yVal = 1 - (b / 255);
-    const kVal = Math.min(cVal, Math.min(mVal, yVal));
-
-    if (kVal === 1) {
-      return { c: 0, m: 0, y: 0, k: 100 };
-    }
-    return {
-      c: Math.round(((cVal - kVal) / (1 - kVal)) * 100),
-      m: Math.round(((mVal - kVal) / (1 - kVal)) * 100),
-      y: Math.round(((yVal - kVal) / (1 - kVal)) * 100),
-      k: Math.round(kVal * 100)
-    };
-  }
-
-  /**
-   * Calculates WCAG Relative Luminance and returns best readable text color (#000000 or #FFFFFF)
-   */
-  function getBestTextColor(hex) {
-    const { r, g, b } = hexToRgb(hex);
-    // Relative luminance formula per WCAG 2.1
-    const sRGB = [r, g, b].map(v => {
-      v /= 255;
-      return v <= 0.03928 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4);
-    });
-    const luminance = 0.2126 * sRGB[0] + 0.7152 * sRGB[1] + 0.0722 * sRGB[2];
-    return luminance > 0.45 ? '#0A0E17' : '#FFFFFF';
-  }
-
-  // ==========================================================================
-  // 3. Harmonies Engine & Interactive Visualizer
-  // ==========================================================================
-  let currentBaseHue = 239; // Indigo default
-  let currentScheme = 'complementary';
-
-  const SCHEME_DEFINITIONS = {
-    complementary: {
-      title: 'Complementary Harmony',
-      geometry: '180° Direct Opposites',
-      desc: 'Colors positioned directly opposite each other on the color wheel. Delivers the maximum possible optical contrast, high vibrancy, and dramatic impact.',
-      offsets: [
-        { label: 'Base', deg: 0, s: 80, l: 55 },
-        { label: 'Complement', deg: 180, s: 85, l: 55 },
-        { label: 'Tinted Base', deg: 0, s: 50, l: 75 },
-        { label: 'Shaded Opp', deg: 180, s: 90, l: 30 }
-      ]
-    },
-    analogous: {
-      title: 'Analogous Harmony',
-      geometry: 'Adjacent ±30° Angles',
-      desc: 'Colors that sit side by side on the color wheel. They blend serenely with low tension, creating calming, cohesive, and naturalistic compositions.',
-      offsets: [
-        { label: 'Preceding', deg: -30, s: 75, l: 55 },
-        { label: 'Base Hue', deg: 0, s: 85, l: 55 },
-        { label: 'Succeeding', deg: 30, s: 80, l: 55 },
-        { label: 'Muted Accent', deg: 60, s: 60, l: 70 }
-      ]
-    },
-    triadic: {
-      title: 'Triadic Harmony',
-      geometry: '120° Equilateral Triangle',
-      desc: 'Three colors evenly spaced around the 360° wheel. Highly vibrant even when using pale or unsaturated versions, offering balance and richness.',
-      offsets: [
-        { label: 'Base Hue', deg: 0, s: 80, l: 55 },
-        { label: 'Triad 2', deg: 120, s: 80, l: 55 },
-        { label: 'Triad 3', deg: 240, s: 80, l: 55 },
-        { label: 'Light Base', deg: 0, s: 40, l: 80 }
-      ]
-    },
-    tetradic: {
-      title: 'Tetradic (Square) Harmony',
-      geometry: '90° Rectangular Scheme',
-      desc: 'Four colors arranged into two complementary pairs. Extremely rich with plenty of variation; works best when one color dominates while others serve as accents.',
-      offsets: [
-        { label: 'Primary', deg: 0, s: 80, l: 55 },
-        { label: 'Accent 1', deg: 90, s: 75, l: 55 },
-        { label: 'Complement', deg: 180, s: 80, l: 55 },
-        { label: 'Accent 2', deg: 270, s: 75, l: 55 }
-      ]
-    },
-    'split-complementary': {
-      title: 'Split-Complementary Harmony',
-      geometry: 'Base + 150° / 210° Flanks',
-      desc: 'A variation of complementary harmony using the base color plus the two colors adjacent to its complement. High contrast with less aggressive visual tension.',
-      offsets: [
-        { label: 'Base Color', deg: 0, s: 80, l: 55 },
-        { label: 'Split Left', deg: 150, s: 85, l: 55 },
-        { label: 'Split Right', deg: 210, s: 85, l: 55 },
-        { label: 'Soft Echo', deg: 180, s: 35, l: 75 }
-      ]
-    },
-    monochromatic: {
-      title: 'Monochromatic Harmony',
-      geometry: 'Single Hue Variations',
-      desc: 'Variations in lightness and saturation across a single hue. Elegant, clean, and restful on the human eye; eliminates color clashing.',
-      offsets: [
-        { label: 'Deep Shade', deg: 0, s: 90, l: 25 },
-        { label: 'Base Hue', deg: 0, s: 80, l: 55 },
-        { label: 'Soft Tone', deg: 0, s: 45, l: 65 },
-        { label: 'Luminous Tint', deg: 0, s: 60, l: 85 }
-      ]
-    }
+    bookmarks: JSON.parse(localStorage.getItem('hbe_bookmarks') || '[]'),
+    mastered: JSON.parse(localStorage.getItem('hbe_mastered') || '[]'),
+    theme: localStorage.getItem('hbe_theme') || 'light',
+    soundEnabled: localStorage.getItem('hbe_sound') !== 'false'
   };
 
-  function renderHarmonyPalette() {
-    const container = document.getElementById('harmony-palette-output');
-    const titleEl = document.getElementById('harmony-title');
-    const geoEl = document.getElementById('harmony-geometry');
-    const descEl = document.getElementById('harmony-description');
+  // Web Audio API Synthesizer (Zero external dependencies)
+  let audioCtx = null;
+  function playTone(freq = 440, type = 'sine', duration = 0.08, gainVal = 0.05) {
+    if (!state.soundEnabled) return;
+    try {
+      if (!audioCtx) {
+        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      }
+      if (audioCtx.state === 'suspended') {
+        audioCtx.resume();
+      }
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      osc.type = type;
+      osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+      gain.gain.setValueAtTime(gainVal, audioCtx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + duration);
+      osc.connect(gain);
+      gain.connect(audioCtx.destination);
+      osc.start();
+      osc.stop(audioCtx.currentTime + duration);
+    } catch (e) {
+      // Audio not supported or blocked
+    }
+  }
 
-    if (!container || !SCHEME_DEFINITIONS[currentScheme]) return;
+  function playSuccessChime() {
+    playTone(523.25, 'triangle', 0.1, 0.06); // C5
+    setTimeout(() => playTone(659.25, 'triangle', 0.15, 0.06), 80); // E5
+  }
 
-    const schemeInfo = SCHEME_DEFINITIONS[currentScheme];
-    titleEl.textContent = schemeInfo.title;
-    geoEl.textContent = schemeInfo.geometry;
-    descEl.textContent = schemeInfo.desc;
+  function playErrorChime() {
+    playTone(330, 'sawtooth', 0.12, 0.04);
+    setTimeout(() => playTone(277.18, 'sawtooth', 0.15, 0.04), 90);
+  }
 
-    container.innerHTML = '';
+  // ==========================================================================
+  // SVG Anatomical Body Generation
+  // ==========================================================================
+  function renderBodySVG(view = 'front', systemFilter = 'all') {
+    const container = document.getElementById('body-svg-wrapper');
+    if (!container) return;
 
-    schemeInfo.offsets.forEach(slot => {
-      const computedHue = (currentBaseHue + slot.deg + 360) % 360;
-      const rgb = hslToRgb(computedHue, slot.s, slot.l);
-      const hex = rgbToHex(rgb.r, rgb.g, rgb.b);
-      const textColor = getBestTextColor(hex);
+    const organs = (window.ORGANS_DATA || []).filter(o => o.view === view);
 
-      const swatch = document.createElement('div');
-      swatch.className = 'harmony-swatch-box';
-      swatch.style.backgroundColor = hex;
-      swatch.innerHTML = `
-        <span class="harmony-swatch-role" style="color: ${textColor}; opacity: 0.9;">${slot.label}</span>
-        <span class="harmony-swatch-hex" style="color: ${textColor};">${hex}</span>
+    // Dynamic SVG template with realistic anatomical silhouette, organ layers, and interactive hotspot pins
+    let svgHTML = `
+      <svg class="body-svg" viewBox="0 0 100 100" preserveAspectRatio="xMidYMid meet" role="img" aria-label="Interactive Human Body Model">
+        <defs>
+          <linearGradient id="bodySkinGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#0284c7" stop-opacity="0.08" />
+            <stop offset="100%" stop-color="#0d9488" stop-opacity="0.14" />
+          </linearGradient>
+          <filter id="glowEffect" x="-20%" y="-20%" width="140%" height="140%">
+            <feGaussianBlur stdDeviation="1.5" result="blur" />
+            <feComposite in="SourceGraphic" in2="blur" operator="over" />
+          </filter>
+        </defs>
+
+        <!-- Base Anatomical Silhouette (Human Proportions) -->
+        <g class="body-silhouette">
+    `;
+
+    if (view === 'front') {
+      svgHTML += `
+          <!-- Front Body Contour -->
+          <!-- Head & Cranium -->
+          <ellipse cx="50" cy="11" rx="8" ry="9" fill="url(#bodySkinGrad)" stroke="var(--border-strong)" stroke-width="0.8" />
+          <!-- Neck -->
+          <path d="M47 19 L47 23 L53 23 L53 19 Z" fill="url(#bodySkinGrad)" stroke="var(--border-strong)" stroke-width="0.8" />
+          <!-- Clavicles & Shoulders -->
+          <path d="M47 23 C42 24 35 25 30 29 C28 35 27 50 24 68 C23 72 24 75 25 75 C26 75 27 72 28 68 C30 55 32 42 34 35 L36 34 L36 58 C36 62 44 64 50 64 C56 64 64 62 64 58 L64 34 L66 35 C68 42 70 55 72 68 C73 72 74 75 75 75 C76 75 77 72 76 68 C73 50 72 35 70 29 C65 25 58 24 53 23 Z" 
+                fill="url(#bodySkinGrad)" stroke="var(--border-strong)" stroke-width="0.8" />
+          <!-- Lower Pelvis & Legs -->
+          <path d="M37 62 L39 78 C40 84 41 93 41 96 C41 97 45 97 45 96 C46 92 48 82 49 74 L50 70 L51 74 C52 82 54 92 55 96 C55 97 59 97 59 96 C59 93 60 84 61 78 L63 62 Z" 
+                fill="url(#bodySkinGrad)" stroke="var(--border-strong)" stroke-width="0.8" />
+          
+          <!-- Organ Silhouettes (Front) -->
+          <!-- Ribcage Guide -->
+          <ellipse cx="50" cy="34" rx="14" ry="10" fill="none" stroke="var(--border-subtle)" stroke-dasharray="1.5,1.5" stroke-width="0.6" />
+          <!-- Lungs Outline -->
+          <path d="M43 27 C38 27 35 32 36 39 C38 41 43 40 44 38 Z" fill="#0284c7" fill-opacity="0.15" stroke="#0284c7" stroke-width="0.5" />
+          <path d="M57 27 C62 27 65 32 64 39 C62 41 57 40 56 38 Z" fill="#0284c7" fill-opacity="0.15" stroke="#0284c7" stroke-width="0.5" />
+          <!-- Heart Silhouette -->
+          <path d="M52 29 C50 27 47 28 47 31 C47 34 52 37 52 37 C52 37 57 34 57 31 C57 28 54 27 52 29 Z" fill="#e11d48" fill-opacity="0.3" stroke="#e11d48" stroke-width="0.7" />
+          <!-- Liver in RUQ -->
+          <path d="M43 39 C40 39 37 42 38 46 C41 48 48 48 50 45 C50 41 47 39 43 39 Z" fill="#d97706" fill-opacity="0.25" stroke="#d97706" stroke-width="0.5" />
+          <!-- Stomach in LUQ -->
+          <path d="M51 40 C49 41 51 47 55 47 C57 47 58 43 56 41 C54 39 52 40 51 40 Z" fill="#f59e0b" fill-opacity="0.3" stroke="#f59e0b" stroke-width="0.5" />
+          <!-- Small Intestines Center -->
+          <ellipse cx="50" cy="52" rx="7" ry="5" fill="#f59e0b" fill-opacity="0.15" stroke="#f59e0b" stroke-width="0.5" />
+          <!-- Bladder in Pelvis -->
+          <ellipse cx="50" cy="63" rx="4" ry="3" fill="#0d9488" fill-opacity="0.25" stroke="#0d9488" stroke-width="0.5" />
       `;
+    } else {
+      svgHTML += `
+          <!-- Posterior Body Contour -->
+          <!-- Head & Occiput -->
+          <ellipse cx="50" cy="11" rx="8" ry="9" fill="url(#bodySkinGrad)" stroke="var(--border-strong)" stroke-width="0.8" />
+          <!-- Neck & Trapezius -->
+          <path d="M47 19 L45 24 L55 24 L53 19 Z" fill="url(#bodySkinGrad)" stroke="var(--border-strong)" stroke-width="0.8" />
+          <!-- Back & Shoulders -->
+          <path d="M45 24 C40 25 35 26 30 30 C28 36 27 51 24 68 C23 72 24 75 25 75 C26 75 27 72 28 68 C30 55 32 42 34 35 L36 34 L36 58 C36 62 44 65 50 65 C56 65 64 62 64 58 L64 34 L66 35 C68 42 70 55 72 68 C73 72 74 75 75 75 C76 75 77 72 76 68 C73 51 72 36 70 30 C65 26 60 25 55 24 Z" 
+                fill="url(#bodySkinGrad)" stroke="var(--border-strong)" stroke-width="0.8" />
+          <!-- Gluteal Region & Back of Legs -->
+          <path d="M37 62 C37 66 42 69 49 69 L49 74 C50 82 52 92 53 96 C53 97 49 97 49 96 C48 93 46 84 45 78 L43 68 C40 68 37 65 37 62 Z" 
+                fill="url(#bodySkinGrad)" stroke="var(--border-strong)" stroke-width="0.8" />
+          <path d="M63 62 C63 66 58 69 51 69 L51 74 C50 82 48 92 47 96 C47 97 51 97 51 96 C52 93 54 84 55 78 L57 68 C60 68 63 65 63 62 Z" 
+                fill="url(#bodySkinGrad)" stroke="var(--border-strong)" stroke-width="0.8" />
+          
+          <!-- Vertebral Column (Spine) -->
+          <line x1="50" y1="20" x2="50" y2="62" stroke="#64748b" stroke-width="1.8" stroke-dasharray="2,1" />
+          <!-- Cerebellum at base of skull -->
+          <ellipse cx="50" cy="15" rx="5" ry="3" fill="#7c3aed" fill-opacity="0.35" stroke="#7c3aed" stroke-width="0.6" />
+          <!-- Retroperitoneal Kidneys -->
+          <ellipse cx="43" cy="46" rx="3.5" ry="4.5" fill="#0d9488" fill-opacity="0.3" stroke="#0d9488" stroke-width="0.6" />
+          <ellipse cx="57" cy="45" rx="3.5" ry="4.5" fill="#0d9488" fill-opacity="0.3" stroke="#0d9488" stroke-width="0.6" />
+      `;
+    }
 
-      swatch.addEventListener('click', () => {
-        copyToClipboard(hex, `Copied ${slot.label} (${hex}) to clipboard!`);
+    svgHTML += `</g><!-- End silhouette -->`;
+
+    // Hotspot Pins Layer
+    svgHTML += `<g class="body-hotspots">`;
+    organs.forEach(organ => {
+      if (!organ.hotspot) return;
+
+      const matchesSystem = systemFilter === 'all' || 
+        organ.systemId === systemFilter || 
+        (organ.relatedSystemIds && organ.relatedSystemIds.includes(systemFilter));
+
+      const isSelected = organ.id === state.selectedOrganId;
+      const opacity = matchesSystem ? "1" : "0.2";
+      const system = (window.SYSTEMS_DATA || []).find(s => s.id === organ.systemId);
+      const color = system ? system.color : "var(--accent-cyan)";
+
+      svgHTML += `
+        <g class="organ-hotspot ${isSelected ? 'active' : ''}" 
+           id="hotspot-${organ.id}" 
+           data-id="${organ.id}" 
+           style="opacity: ${opacity};"
+           role="button" 
+           tabindex="0"
+           aria-label="Inspect ${organ.name}">
+          <!-- Pulsing Outer Ring -->
+          <circle class="pin-outer" cx="${organ.hotspot.x}" cy="${organ.hotspot.y}" r="4" style="fill: ${color};" />
+          <!-- Solid Core Marker -->
+          <circle class="pin-core" cx="${organ.hotspot.x}" cy="${organ.hotspot.y}" r="2" style="fill: ${color};" />
+        </g>
+      `;
+    });
+    svgHTML += `</g></svg>`;
+
+    container.innerHTML = svgHTML;
+
+    // Attach Hotspot Listeners
+    container.querySelectorAll('.organ-hotspot').forEach(el => {
+      el.addEventListener('click', function () {
+        const organId = this.getAttribute('data-id');
+        selectOrgan(organId);
+        playTone(600, 'sine', 0.05);
       });
 
-      container.appendChild(swatch);
+      el.addEventListener('keydown', function (e) {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          const organId = this.getAttribute('data-id');
+          selectOrgan(organId);
+        }
+      });
     });
   }
 
-  // Bind harmony tabs
-  const harmonyTabs = document.querySelectorAll('.harmony-tab');
-  harmonyTabs.forEach(tab => {
-    tab.addEventListener('click', () => {
-      harmonyTabs.forEach(t => t.classList.remove('active'));
-      tab.classList.add('active');
-      currentScheme = tab.dataset.scheme;
-      renderHarmonyPalette();
-    });
-  });
-
-  // Bind quick base hue preset buttons
-  const hueDotBtns = document.querySelectorAll('.hue-dot-btn');
-  hueDotBtns.forEach(btn => {
-    btn.addEventListener('click', () => {
-      currentBaseHue = parseInt(btn.dataset.hue, 10);
-      renderHarmonyPalette();
-    });
-  });
-
   // ==========================================================================
-  // 4. Interactive Live Converter Engine
+  // Quick Inspector Panel Updates
   // ==========================================================================
-  const nativePicker = document.getElementById('native-color-picker');
-  const inputHex = document.getElementById('input-hex');
-  const inputRgb = document.getElementById('input-rgb');
-  const inputHsl = document.getElementById('input-hsl');
-  const inputCmyk = document.getElementById('input-cmyk');
-  const converterPreview = document.getElementById('converter-preview');
-  const converterContrastText = document.getElementById('converter-contrast-text');
+  function selectOrgan(organId) {
+    const organ = (window.ORGANS_DATA || []).find(o => o.id === organId);
+    if (!organ) return;
 
-  function updateConverterFromHex(hexValue) {
-    const rgb = hexToRgb(hexValue);
-    const hsl = rgbToHsl(rgb.r, rgb.g, rgb.b);
-    const cmyk = rgbToCmyk(rgb.r, rgb.g, rgb.b);
-    const contrastColor = getBestTextColor(hexValue);
+    state.selectedOrganId = organId;
 
-    nativePicker.value = hexValue;
-    inputHex.value = hexValue.toUpperCase();
-    inputRgb.value = `rgb(${rgb.r}, ${rgb.g}, ${rgb.b})`;
-    inputHsl.value = `hsl(${hsl.h}, ${hsl.s}%, ${hsl.l}%)`;
-    inputCmyk.value = `${cmyk.c}%, ${cmyk.m}%, ${cmyk.y}%, ${cmyk.k}%`;
-
-    converterPreview.style.backgroundColor = hexValue;
-    converterContrastText.style.color = contrastColor;
-    converterContrastText.textContent = `${hexValue.toUpperCase()} • Sample Contrast`;
-  }
-
-  if (nativePicker) {
-    nativePicker.addEventListener('input', (e) => {
-      updateConverterFromHex(e.target.value);
+    // Update active state in SVG
+    document.querySelectorAll('.organ-hotspot').forEach(el => {
+      el.classList.toggle('active', el.getAttribute('data-id') === organId);
     });
-  }
 
-  if (inputHex) {
-    inputHex.addEventListener('change', (e) => {
-      let val = e.target.value.trim();
-      if (!val.startsWith('#')) val = '#' + val;
-      if (/^#[0-9A-F]{6}$/i.test(val)) {
-        updateConverterFromHex(val);
-      }
-    });
-  }
-
-  // Copy buttons on converter fields
-  document.querySelectorAll('.copy-field-btn').forEach(btn => {
-    btn.addEventListener('click', () => {
-      const targetId = btn.dataset.target;
-      const targetInput = document.getElementById(targetId);
-      if (targetInput) {
-        copyToClipboard(targetInput.value, `Copied ${targetInput.value}`);
-      }
-    });
-  });
-
-  // ==========================================================================
-  // 5. Curated Mood Palettes Studio
-  // ==========================================================================
-  const MOOD_PALETTES = [
-    {
-      title: 'Cyberpunk Neon',
-      vibe: 'High-Voltage Futurism',
-      desc: 'Electrified contrasts inspired by neon-drenched Tokyo nights, glitch art, and synthetic retro-wave.',
-      colors: ['#080811', '#FF007F', '#00F0FF', '#7B2CBF', '#FFE600']
-    },
-    {
-      title: 'Nordic Serenity',
-      vibe: 'Clean Scandinavian Minimal',
-      desc: 'Soothing glacial tones, frosted pine, and soft morning fog for calm, uncluttered modern design.',
-      colors: ['#2E3440', '#4C566A', '#88C0D0', '#ECEFF4', '#A3BE8C']
-    },
-    {
-      title: 'Tuscan Sunset',
-      vibe: 'Warm Rustic Heritage',
-      desc: 'Sunbaked terracotta, aged Chianti wine, golden wheat fields, and deep Mediterranean dusk.',
-      colors: ['#2B1B17', '#C84B31', '#EC9B3B', '#F4D19B', '#2D4263']
-    },
-    {
-      title: 'Earthy Botanical',
-      vibe: 'Organic Forest Sanctuary',
-      desc: 'Mossy bark, rain-washed eucalyptus, and warm potting clay evoking biological harmony.',
-      colors: ['#1E2B22', '#3E5A44', '#8F9E8B', '#D0DBBD', '#C29B78']
-    },
-    {
-      title: 'Royal Opulence',
-      vibe: 'Regal Majesty & Velvet',
-      desc: 'Deep imperial Tyrian purple and antique gilding for artisanal luxury and prestige packaging.',
-      colors: ['#1A0933', '#4E148C', '#851C85', '#E27396', '#FFD700']
-    },
-    {
-      title: 'Pastel Dreamscape',
-      vibe: 'Whimsical Nostalgia',
-      desc: 'Fluffy strawberry milk, powdered lavender, and pistachio gelato for gentle, airy interfaces.',
-      colors: ['#DDA7A5', '#ABC8C7', '#B7B8D6', '#F9DCC4', '#FCE8E8']
+    // If organ belongs to the opposite view, switch view smoothly!
+    if (organ.view && organ.view !== state.currentView) {
+      state.currentView = organ.view;
+      document.querySelectorAll('.view-toggle-btn').forEach(btn => {
+        btn.classList.toggle('active', btn.getAttribute('data-view') === organ.view);
+      });
+      renderBodySVG(state.currentView, state.currentSystemFilter);
     }
+
+    const system = (window.SYSTEMS_DATA || []).find(s => s.id === organ.systemId);
+
+    // Update Inspector DOM
+    const nameEl = document.getElementById('inspect-name');
+    const latinEl = document.getElementById('inspect-latin');
+    const systemTag = document.getElementById('inspect-system-tag');
+    const regionTag = document.getElementById('inspect-region-tag');
+    const summaryEl = document.getElementById('inspect-summary');
+    const bulletsEl = document.getElementById('inspect-bullets');
+    const illustrationEl = document.getElementById('inspect-illustration');
+    const bookmarkBtn = document.getElementById('inspect-bookmark-btn');
+
+    if (nameEl) nameEl.textContent = organ.name;
+    if (latinEl) latinEl.textContent = organ.latinName || '';
+    if (systemTag) {
+      systemTag.textContent = system ? system.name : organ.systemId;
+      systemTag.style.backgroundColor = system ? system.color : 'var(--accent-cyan)';
+    }
+    if (regionTag) {
+      regionTag.textContent = organ.bodyRegion ? organ.bodyRegion.toUpperCase() : 'ANATOMY';
+    }
+    if (summaryEl) summaryEl.textContent = organ.overview;
+
+    if (bulletsEl) {
+      bulletsEl.innerHTML = (organ.primaryFunctions || [])
+        .slice(0, 3)
+        .map(fn => `<li>${fn}</li>`)
+        .join('');
+    }
+
+    // Generate Mini Schematic Diagram
+    if (illustrationEl) {
+      illustrationEl.innerHTML = generateMiniOrganDiagram(organ);
+    }
+
+    // Bookmark status
+    if (bookmarkBtn) {
+      const isSaved = state.bookmarks.includes(organ.id);
+      bookmarkBtn.classList.toggle('bookmarked', isSaved);
+      bookmarkBtn.setAttribute('title', isSaved ? 'Remove from Bookmarks' : 'Save to Bookmarks');
+    }
+  }
+
+  // Generate SVG Mini Diagram for Quick Inspector
+  function generateMiniOrganDiagram(organ) {
+    const sysColor = (window.SYSTEMS_DATA || []).find(s => s.id === organ.systemId)?.color || '#0284c7';
+
+    switch (organ.svgType) {
+      case 'heart':
+        return `
+          <svg viewBox="0 0 100 100" width="120" height="120" style="filter: drop-shadow(0 4px 10px rgba(225, 29, 72, 0.3));">
+            <path d="M50 25 C45 15 30 15 25 25 C18 38 35 55 50 75 C65 55 82 38 75 25 C70 15 55 15 50 25 Z" fill="#e11d48" />
+            <!-- Aorta arch -->
+            <path d="M46 22 C46 14 56 12 58 18" fill="none" stroke="#fb7185" stroke-width="4" stroke-linecap="round" />
+            <!-- Superior Vena Cava -->
+            <line x1="38" y1="14" x2="38" y2="25" stroke="#38bdf8" stroke-width="4" stroke-linecap="round" />
+            <circle cx="50" cy="45" r="3" fill="white" opacity="0.8" />
+          </svg>
+        `;
+      case 'brain':
+        return `
+          <svg viewBox="0 0 100 100" width="120" height="120" style="filter: drop-shadow(0 4px 10px rgba(124, 58, 237, 0.3));">
+            <path d="M50 20 C35 20 25 32 25 45 C25 58 35 65 42 66 L42 75 C42 78 46 80 50 80 C54 80 58 78 58 75 L58 66 C65 65 75 58 75 45 C75 32 65 20 50 20 Z" fill="#8b5cf6" />
+            <!-- Gyri convolutions -->
+            <path d="M35 35 Q45 40 40 48 Q35 55 45 58 M65 35 Q55 40 60 48 Q65 55 55 58" fill="none" stroke="#c4b5fd" stroke-width="2.5" stroke-linecap="round" />
+          </svg>
+        `;
+      case 'lungs':
+        return `
+          <svg viewBox="0 0 100 100" width="120" height="120" style="filter: drop-shadow(0 4px 10px rgba(2, 132, 199, 0.3));">
+            <line x1="50" y1="15" x2="50" y2="40" stroke="#94a3b8" stroke-width="4" stroke-linecap="round" />
+            <path d="M50 40 L40 48 M50 40 L60 48" stroke="#94a3b8" stroke-width="3" stroke-linecap="round" />
+            <path d="M38 45 C28 45 22 55 24 72 C26 78 35 78 42 74 C44 65 42 50 38 45 Z" fill="#0284c7" opacity="0.85" />
+            <path d="M62 45 C72 45 78 55 76 72 C74 78 65 78 58 74 C56 65 58 50 62 45 Z" fill="#0284c7" opacity="0.85" />
+          </svg>
+        `;
+      case 'liver':
+        return `
+          <svg viewBox="0 0 100 100" width="120" height="120" style="filter: drop-shadow(0 4px 10px rgba(217, 119, 6, 0.3));">
+            <path d="M25 40 C35 30 70 30 80 45 C85 55 75 68 55 70 C35 72 20 60 25 40 Z" fill="#d97706" />
+            <path d="M50 34 L54 68" stroke="#fcd34d" stroke-width="1.5" stroke-dasharray="2,2" />
+          </svg>
+        `;
+      case 'kidney':
+        return `
+          <svg viewBox="0 0 100 100" width="120" height="120" style="filter: drop-shadow(0 4px 10px rgba(13, 148, 136, 0.3));">
+            <path d="M45 25 C30 25 25 45 35 65 C45 80 65 80 70 65 C75 50 60 48 55 48 C50 48 55 35 45 25 Z" fill="#0d9488" />
+            <path d="M55 48 L65 58 L68 80" fill="none" stroke="#94a3b8" stroke-width="2.5" stroke-linecap="round" />
+          </svg>
+        `;
+      default:
+        return `
+          <svg viewBox="0 0 100 100" width="120" height="120">
+            <circle cx="50" cy="50" r="32" fill="${sysColor}" fill-opacity="0.2" stroke="${sysColor}" stroke-width="2.5" />
+            <circle cx="50" cy="50" r="14" fill="${sysColor}" />
+          </svg>
+        `;
+    }
+  }
+
+  // ==========================================================================
+  // Explore by Category Section
+  // ==========================================================================
+  const CATEGORIES_DATA = [
+    { name: "Organ Systems", color: "#8b5cf6", icon: "system", count: "11 Systems", desc: "Coordinated organ groups working together for holistic biological homeostasis." },
+    { name: "Internal Organs", color: "#e11d48", icon: "heart", count: "16+ Organs", desc: "Heart, liver, lungs, kidneys, and stomach performing essential vegetative work." },
+    { name: "Brain and Nervous System", color: "#7c3aed", icon: "brain", count: "8 Structures", desc: "Cerebrum, cerebellum, brainstem, spinal cord, and sensory nerves." },
+    { name: "Glands and Hormones", color: "#d97706", icon: "zap", count: "7+ Glands", desc: "Hypothalamus, pituitary, thyroid, adrenal, and pancreatic endocrine units." },
+    { name: "Bones and Skeleton", color: "#64748b", icon: "shield", count: "206 Bones", desc: "Living architectural framework, levers for motion, and mineral vault." },
+    { name: "Muscles and Movement", color: "#dc2626", icon: "activity", count: "640+ Muscles", desc: "Striated voluntary fibers, sliding filaments, and motor power generation." },
+    { name: "Sense Organs", color: "#0891b2", icon: "eye", count: "5 Senses", desc: "Eyes, cochlear hearing, olfaction, and gustation transducer organs." },
+    { name: "Cells and Tissues", color: "#0d9488", icon: "layers", count: "Micro-structures", desc: "Nephrons, alveoli, intestinal villi, enterocytes, and podocytes." },
+    { name: "Blood and Body Fluids", color: "#e11d48", icon: "droplet", count: "Fluid Matrix", desc: "Erythrocytes, leukocytes, thrombocytes, plasma, and lymph." },
+    { name: "External Body Parts", color: "#ea580c", icon: "sun", count: "Integument", desc: "Epidermis, dermis, sensory mechanoreceptors, hair, and nails." }
   ];
 
-  function renderMoodPalettes() {
-    const grid = document.getElementById('mood-palettes-grid');
+  function renderCategories() {
+    const grid = document.getElementById('categories-grid');
     if (!grid) return;
 
-    grid.innerHTML = '';
-    MOOD_PALETTES.forEach(mood => {
-      const card = document.createElement('div');
-      card.className = 'mood-card';
-
-      let swatchesHtml = '';
-      mood.colors.forEach(hex => {
-        swatchesHtml += `
-          <div class="mood-strip-swatch" style="background-color: ${hex};" title="Click to copy ${hex}" data-hex="${hex}">
-            <span>${hex}</span>
-          </div>
-        `;
-      });
-
-      card.innerHTML = `
-        <div class="mood-swatches-strip">
-          ${swatchesHtml}
+    grid.innerHTML = CATEGORIES_DATA.map(cat => `
+      <div class="category-card" data-category="${cat.name}" style="--cat-color: ${cat.color}; --cat-accent: ${cat.color}99;">
+        <div class="category-icon-wrapper">
+          <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="9"></circle>
+            <path d="m9 12 2 2 4-4"></path>
+          </svg>
         </div>
-        <div class="mood-body">
-          <div class="mood-header">
-            <h3 class="mood-title">${mood.title}</h3>
-            <span class="mood-vibe-tag">${mood.vibe}</span>
-          </div>
-          <p class="mood-description">${mood.desc}</p>
+        <div style="font-size: 0.75rem; font-weight: 700; color: ${cat.color}; margin-bottom: 4px;">${cat.count}</div>
+        <h3 class="category-name">${cat.name}</h3>
+        <p class="category-desc">${cat.desc}</p>
+        <div class="category-link-row">
+          <span>Explore Category</span>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="5" y1="12" x2="19" y2="12"></line>
+            <polyline points="12 5 19 12 12 19"></polyline>
+          </svg>
         </div>
-      `;
+      </div>
+    `).join('');
 
-      card.querySelectorAll('.mood-strip-swatch').forEach(sw => {
-        sw.addEventListener('click', (e) => {
-          e.stopPropagation();
-          const hex = sw.dataset.hex;
-          copyToClipboard(hex, `Copied ${hex} to clipboard!`);
-        });
+    grid.querySelectorAll('.category-card').forEach(card => {
+      card.addEventListener('click', function () {
+        const catName = this.getAttribute('data-category');
+        const catSelect = document.getElementById('directory-category-select');
+        if (catSelect) {
+          catSelect.value = catName;
+          filterDirectory();
+        }
+        document.getElementById('organ-directory')?.scrollIntoView({ behavior: 'smooth' });
+        playTone(500, 'sine', 0.05);
       });
-
-      grid.appendChild(card);
     });
   }
 
   // ==========================================================================
-  // 6. Encyclopedia Catalog Filtering, Search & Grid Rendering
+  // "How It Works" Biological Process Visualizer
   // ==========================================================================
-  const cardsContainer = document.getElementById('color-cards-container');
-  const resultsCounter = document.getElementById('results-count');
-  const categoryPills = document.querySelectorAll('.filter-pill');
-  const familySelect = document.getElementById('family-select');
-  const librarySearchInput = document.getElementById('library-search-input');
-  const heroSearchInput = document.getElementById('hero-color-search');
-  const clearSearchBtn = document.getElementById('clear-search-btn');
+  function renderProcessTabs() {
+    const wrapper = document.getElementById('process-tabs');
+    if (!wrapper) return;
 
-  let activeCategory = 'all';
-  let activeFamily = 'all';
-  let searchQuery = '';
+    const processes = window.PROCESSES_DATA || [];
+    wrapper.innerHTML = processes.map(proc => `
+      <button class="process-tab-btn ${proc.id === state.currentProcessId ? 'active' : ''}" 
+              data-id="${proc.id}" role="tab">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="10"></circle>
+          <polygon points="10 8 16 12 10 16 10 8"></polygon>
+        </svg>
+        <span>${proc.title.split('(')[0]}</span>
+      </button>
+    `).join('');
 
-  function renderColorGrid() {
-    if (!cardsContainer) return;
+    wrapper.querySelectorAll('.process-tab-btn').forEach(btn => {
+      btn.addEventListener('click', function () {
+        state.currentProcessId = this.getAttribute('data-id');
+        state.currentProcessStep = 0;
+        wrapper.querySelectorAll('.process-tab-btn').forEach(b => b.classList.remove('active'));
+        this.classList.add('active');
+        renderCurrentProcess();
+        playTone(550, 'sine', 0.05);
+      });
+    });
+  }
 
-    const filtered = COLOR_DATABASE.filter(item => {
-      // Category match
-      const matchesCategory = activeCategory === 'all' || item.category.toLowerCase() === activeCategory.toLowerCase();
+  function renderCurrentProcess() {
+    const stage = document.getElementById('process-stage');
+    if (!stage) return;
 
-      // Family match
-      const matchesFamily = activeFamily === 'all' || item.family.toLowerCase() === activeFamily.toLowerCase();
+    const process = (window.PROCESSES_DATA || []).find(p => p.id === state.currentProcessId);
+    if (!process) return;
 
-      // Search text match
-      const q = searchQuery.toLowerCase().trim();
-      const matchesSearch = !q ||
-        item.name.toLowerCase().includes(q) ||
-        item.hex.toLowerCase().includes(q) ||
-        item.category.toLowerCase().includes(q) ||
-        item.temperature.toLowerCase().includes(q) ||
-        item.meaning.toLowerCase().includes(q);
+    const stepIndex = state.currentProcessStep;
+    const currentStep = process.steps[stepIndex];
+    const totalSteps = process.steps.length;
 
-      return matchesCategory && matchesFamily && matchesSearch;
+    stage.innerHTML = `
+      <div class="process-title-row">
+        <div>
+          <h3 class="process-heading">${process.title}</h3>
+          <p class="process-subheading">${process.subtitle}</p>
+        </div>
+        <div style="font-size: 0.8125rem; font-weight: 700; color: var(--accent-cyan); background: var(--accent-cyan-light); padding: 6px 14px; border-radius: var(--radius-full);">
+          Step ${stepIndex + 1} of ${totalSteps}
+        </div>
+      </div>
+
+      <!-- Stepper Progress Nodes -->
+      <div class="stepper-timeline">
+        ${process.steps.map((s, idx) => `
+          <div class="stepper-node ${idx < stepIndex ? 'completed' : ''} ${idx === stepIndex ? 'active' : ''}" 
+               data-step="${idx}" 
+               title="Step ${idx + 1}: ${s.title}"></div>
+        `).join('')}
+      </div>
+
+      <!-- Step Content Grid -->
+      <div class="step-content-grid">
+        <div class="step-info-col">
+          <div class="step-meta">
+            <span class="step-badge">Step ${currentStep.stepNumber}</span>
+            <span class="step-phase">${currentStep.phase}</span>
+          </div>
+
+          <h4 class="step-title">${currentStep.title}</h4>
+          <p class="step-action-desc">${currentStep.action}</p>
+
+          <div class="step-highlight-box">
+            <strong>Biological Mechanism: </strong>${currentStep.chemicalOrElectricalEvent}
+          </div>
+
+          <div class="step-clinical-box">
+            <strong>Clinical Insight: </strong>${currentStep.clinicalNote}
+          </div>
+        </div>
+
+        <div class="step-visual-display">
+          <div style="font-size: 0.75rem; font-weight: 700; text-transform: uppercase; color: var(--text-muted); margin-bottom: 14px;">
+            Active Physiological Structures
+          </div>
+          <div style="display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin-bottom: 24px;">
+            ${(currentStep.structuresHighlighted || []).map(str => `
+              <span class="organ-chip" style="background: var(--accent-cyan-light); color: var(--accent-cyan); font-weight: 700;">
+                ${str}
+              </span>
+            `).join('')}
+          </div>
+
+          <!-- Dynamic SVG Animation Diagram for Step -->
+          <div style="width: 100%; max-width: 260px; height: 180px; display: flex; align-items: center; justify-content: center;">
+            <svg viewBox="0 0 100 100" width="100%" height="100%">
+              <circle cx="50" cy="50" r="38" fill="none" stroke="var(--border-strong)" stroke-width="3" stroke-dasharray="4,4" />
+              <circle cx="50" cy="50" r="24" fill="var(--accent-cyan-light)" stroke="var(--accent-cyan)" stroke-width="2" />
+              <text x="50" y="47" text-anchor="middle" font-size="7" font-weight="bold" fill="var(--text-primary)">STEP ${stepIndex + 1}</text>
+              <text x="50" y="58" text-anchor="middle" font-size="5" fill="var(--text-muted)">ACTIVE</text>
+              <!-- Orbiting Particle -->
+              <circle cx="${50 + 38 * Math.cos((stepIndex / totalSteps) * 2 * Math.PI)}" 
+                      cy="${50 + 38 * Math.sin((stepIndex / totalSteps) * 2 * Math.PI)}" 
+                      r="5" fill="var(--accent-coral)" />
+            </svg>
+          </div>
+        </div>
+      </div>
+
+      <!-- Navigation Bar -->
+      <div class="step-nav-bar">
+        <button class="stepper-btn prev" id="btn-step-prev" ${stepIndex === 0 ? 'disabled' : ''}>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="19" y1="12" x2="5" y2="12"></line>
+            <polyline points="12 19 5 12 12 5"></polyline>
+          </svg>
+          <span>Previous Step</span>
+        </button>
+
+        <button class="stepper-btn next" id="btn-step-next" ${stepIndex === totalSteps - 1 ? 'disabled' : ''}>
+          <span>Next Step</span>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="5" y1="12" x2="19" y2="12"></line>
+            <polyline points="12 5 19 12 12 19"></polyline>
+          </svg>
+        </button>
+      </div>
+    `;
+
+    // Timeline Node clicks
+    stage.querySelectorAll('.stepper-node').forEach(node => {
+      node.addEventListener('click', function () {
+        state.currentProcessStep = parseInt(this.getAttribute('data-step'), 10);
+        renderCurrentProcess();
+        playTone(600, 'sine', 0.04);
+      });
     });
 
-    resultsCounter.textContent = `Showing ${filtered.length} of ${COLOR_DATABASE.length} colors`;
+    document.getElementById('btn-step-prev')?.addEventListener('click', () => {
+      if (state.currentProcessStep > 0) {
+        state.currentProcessStep--;
+        renderCurrentProcess();
+        playTone(500, 'sine', 0.05);
+      }
+    });
+
+    document.getElementById('btn-step-next')?.addEventListener('click', () => {
+      if (state.currentProcessStep < totalSteps - 1) {
+        state.currentProcessStep++;
+        renderCurrentProcess();
+        playTone(650, 'sine', 0.05);
+      }
+    });
+  }
+
+  // ==========================================================================
+  // Organ Systems Section
+  // ==========================================================================
+  function renderSystems() {
+    const grid = document.getElementById('systems-grid');
+    if (!grid) return;
+
+    const systems = window.SYSTEMS_DATA || [];
+    grid.innerHTML = systems.map(sys => `
+      <div class="system-card" style="--sys-color: ${sys.color};">
+        <div class="system-card-top">
+          <div class="system-icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="10"></circle>
+              <polyline points="12 6 12 12 16 14"></polyline>
+            </svg>
+          </div>
+          <span class="system-tag" style="background-color: ${sys.color};">${sys.name.split(' ')[0]}</span>
+        </div>
+
+        <h3 class="system-name">${sys.name}</h3>
+        <div class="system-latin">${sys.latinName}</div>
+        <div class="system-tagline">${sys.tagline}</div>
+        <p class="system-overview">${sys.overview.substring(0, 180)}...</p>
+
+        <div style="font-size: 0.75rem; font-weight: 700; text-transform: uppercase; color: var(--text-muted); margin-bottom: 8px;">
+          Key Structures:
+        </div>
+        <div class="system-organs-chips">
+          ${sys.majorOrgans.map(org => `<span class="organ-chip">${org}</span>`).join('')}
+        </div>
+
+        <div class="system-card-footer">
+          <div style="font-size: 0.8125rem; font-weight: 700; color: var(--text-muted);">
+            ${Object.values(sys.stats)[0]}
+          </div>
+          <button class="btn-open-detail" style="width: auto; padding: 8px 16px; font-size: 0.8125rem;" data-system-id="${sys.id}">
+            <span>Explore</span>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <line x1="5" y1="12" x2="19" y2="12"></line>
+              <polyline points="12 5 19 12 12 19"></polyline>
+            </svg>
+          </button>
+        </div>
+      </div>
+    `).join('');
+
+    // Attach click listeners
+    grid.querySelectorAll('.btn-open-detail').forEach(btn => {
+      btn.addEventListener('click', function () {
+        const sysId = this.getAttribute('data-system-id');
+        // Filter directory by system
+        state.currentSystemFilter = sysId;
+        renderBodySVG(state.currentView, sysId);
+        document.getElementById('body-explorer')?.scrollIntoView({ behavior: 'smooth' });
+        playTone(550, 'sine', 0.05);
+      });
+    });
+  }
+
+  // ==========================================================================
+  // All Organs Directory & Filter Engine
+  // ==========================================================================
+  let directoryLetterFilter = 'ALL';
+
+  function renderAlphabetBar() {
+    const bar = document.getElementById('directory-alpha-bar');
+    if (!bar) return;
+
+    const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
+    bar.innerHTML = `
+      <button class="alpha-btn ${directoryLetterFilter === 'ALL' ? 'active' : ''}" data-letter="ALL">ALL</button>
+      ${letters.map(l => `
+        <button class="alpha-btn ${directoryLetterFilter === l ? 'active' : ''}" data-letter="${l}">${l}</button>
+      `).join('')}
+    `;
+
+    bar.querySelectorAll('.alpha-btn').forEach(btn => {
+      btn.addEventListener('click', function () {
+        directoryLetterFilter = this.getAttribute('data-letter');
+        bar.querySelectorAll('.alpha-btn').forEach(b => b.classList.remove('active'));
+        this.classList.add('active');
+        filterDirectory();
+        playTone(500, 'sine', 0.04);
+      });
+    });
+  }
+
+  function filterDirectory() {
+    const grid = document.getElementById('organs-grid');
+    if (!grid) return;
+
+    const searchVal = (document.getElementById('directory-search-input')?.value || '').toLowerCase().trim();
+    const categoryVal = document.getElementById('directory-category-select')?.value || 'all';
+    const regionVal = document.getElementById('directory-region-select')?.value || 'all';
+
+    const organs = window.ORGANS_DATA || [];
+
+    const filtered = organs.filter(organ => {
+      // Search
+      const matchesSearch = !searchVal || 
+        organ.name.toLowerCase().includes(searchVal) ||
+        (organ.latinName && organ.latinName.toLowerCase().includes(searchVal)) ||
+        organ.overview.toLowerCase().includes(searchVal);
+
+      // Category
+      const matchesCategory = categoryVal === 'all' || organ.category === categoryVal;
+
+      // Region
+      const matchesRegion = regionVal === 'all' || organ.bodyRegion === regionVal;
+
+      // Letter
+      const matchesLetter = directoryLetterFilter === 'ALL' || 
+        organ.name.toUpperCase().startsWith(directoryLetterFilter);
+
+      return matchesSearch && matchesCategory && matchesRegion && matchesLetter;
+    });
 
     if (filtered.length === 0) {
-      cardsContainer.innerHTML = `
-        <div class="empty-library-state">
-          <div class="empty-icon">🎨</div>
-          <h3 class="empty-title">No colors found</h3>
-          <p class="empty-desc">Try clearing your search query or selecting a different category filter.</p>
+      grid.innerHTML = `
+        <div style="grid-column: 1 / -1; text-align: center; padding: 60px 20px;">
+          <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="color: var(--text-muted); margin: 0 auto 16px auto;">
+            <circle cx="11" cy="11" r="8"></circle>
+            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+          </svg>
+          <h3 style="font-size: 1.25rem; font-weight: 700; color: var(--text-primary); margin-bottom: 6px;">No organs found</h3>
+          <p style="color: var(--text-muted); font-size: 0.9375rem;">Try adjusting your search terms or filters.</p>
         </div>
       `;
       return;
     }
 
-    cardsContainer.innerHTML = '';
-    filtered.forEach(color => {
-      const card = document.createElement('article');
-      card.className = 'color-card';
-      card.setAttribute('tabindex', '0');
-      card.setAttribute('aria-label', `Color ${color.name}, Hex ${color.hex}`);
+    grid.innerHTML = filtered.map(organ => {
+      const system = (window.SYSTEMS_DATA || []).find(s => s.id === organ.systemId);
+      const isSaved = state.bookmarks.includes(organ.id);
+      const isMastered = state.mastered.includes(organ.id);
 
-      card.innerHTML = `
-        <div class="color-card-swatch" style="background-color: ${color.hex};">
-          <span class="card-category-pill">${color.category}</span>
-        </div>
-        <div class="color-card-body">
-          <div class="color-card-header">
-            <h3 class="color-card-name">${color.name}</h3>
-            <span class="color-card-hex">${color.hex}</span>
-          </div>
-          <p class="color-card-desc">${color.meaning}</p>
-          <div class="color-card-footer">
-            <button class="btn-card-copy" data-hex="${color.hex}" title="Copy Hex">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
-                <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+      return `
+        <div class="organ-card" data-id="${organ.id}">
+          <div class="organ-card-header">
+            <div>
+              <span class="system-tag" style="background-color: ${system ? system.color : 'var(--accent-cyan)'}; font-size: 0.625rem;">
+                ${system ? system.name.split(' ')[0] : organ.systemId}
+              </span>
+              <h3 class="organ-card-name" style="margin-top: 6px;">${organ.name}</h3>
+              <div class="organ-card-latin">${organ.latinName || ''}</div>
+            </div>
+            <button class="action-icon-btn btn-card-bookmark ${isSaved ? 'bookmarked' : ''}" 
+                    data-id="${organ.id}" 
+                    style="width: 32px; height: 32px;"
+                    title="${isSaved ? 'Remove bookmark' : 'Bookmark this organ'}">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="${isSaved ? 'currentColor' : 'none'}" stroke="currentColor" stroke-width="2">
+                <path d="m19 21-7-4-7 4V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16z"/>
               </svg>
-              <span>Copy</span>
             </button>
-            <span class="inspect-hint">Click to Inspect &rarr;</span>
+          </div>
+
+          <p class="organ-card-desc">${organ.overview.substring(0, 140)}...</p>
+
+          <div class="organ-card-footer">
+            <label class="mastered-checkbox-label">
+              <input type="checkbox" class="cb-mastered" data-id="${organ.id}" ${isMastered ? 'checked' : ''}>
+              <span>${isMastered ? 'Mastered ✓' : 'Mark as Studied'}</span>
+            </label>
+
+            <button class="btn-open-detail btn-card-learn" style="width: auto; padding: 6px 14px; font-size: 0.8125rem;" data-id="${organ.id}">
+              <span>Learn More</span>
+            </button>
           </div>
         </div>
       `;
+    }).join('');
 
-      // Copy button handler inside card
-      const copyBtn = card.querySelector('.btn-card-copy');
-      copyBtn.addEventListener('click', (e) => {
+    // Attach card event listeners
+    grid.querySelectorAll('.btn-card-learn').forEach(btn => {
+      btn.addEventListener('click', function (e) {
         e.stopPropagation();
-        copyToClipboard(color.hex, `Copied ${color.name} (${color.hex})!`);
+        const id = this.getAttribute('data-id');
+        openOrganModal(id);
       });
+    });
 
-      // Card click opens modal
-      card.addEventListener('click', () => {
-        openColorModal(color);
+    grid.querySelectorAll('.organ-card').forEach(card => {
+      card.addEventListener('click', function () {
+        const id = this.getAttribute('data-id');
+        openOrganModal(id);
       });
-      card.addEventListener('keydown', (e) => {
-        if (e.key === 'Enter') openColorModal(color);
+    });
+
+    grid.querySelectorAll('.btn-card-bookmark').forEach(btn => {
+      btn.addEventListener('click', function (e) {
+        e.stopPropagation();
+        const id = this.getAttribute('data-id');
+        toggleBookmark(id);
+        filterDirectory();
       });
-
-      cardsContainer.appendChild(card);
     });
-  }
 
-  // Category pills event
-  categoryPills.forEach(pill => {
-    pill.addEventListener('click', () => {
-      categoryPills.forEach(p => p.classList.remove('active'));
-      pill.classList.add('active');
-      activeCategory = pill.dataset.category;
-      renderColorGrid();
-    });
-  });
-
-  // Family dropdown event
-  if (familySelect) {
-    familySelect.addEventListener('change', (e) => {
-      activeFamily = e.target.value;
-      renderColorGrid();
-    });
-  }
-
-  // Library search input event
-  if (librarySearchInput) {
-    librarySearchInput.addEventListener('input', (e) => {
-      searchQuery = e.target.value;
-      renderColorGrid();
-    });
-  }
-
-  // Hero search input event
-  if (heroSearchInput) {
-    heroSearchInput.addEventListener('input', (e) => {
-      searchQuery = e.target.value;
-      if (clearSearchBtn) {
-        clearSearchBtn.classList.toggle('hidden', !searchQuery);
-      }
-      if (librarySearchInput) {
-        librarySearchInput.value = searchQuery;
-      }
-      renderColorGrid();
-    });
-  }
-
-  if (clearSearchBtn) {
-    clearSearchBtn.addEventListener('click', () => {
-      heroSearchInput.value = '';
-      if (librarySearchInput) librarySearchInput.value = '';
-      searchQuery = '';
-      clearSearchBtn.classList.add('hidden');
-      renderColorGrid();
+    grid.querySelectorAll('.cb-mastered').forEach(cb => {
+      cb.addEventListener('change', function (e) {
+        e.stopPropagation();
+        const id = this.getAttribute('data-id');
+        toggleMastery(id, this.checked);
+        filterDirectory();
+      });
     });
   }
 
   // ==========================================================================
-  // 7. Deep Dive Color Inspector Modal
+  // Compare Organs Tool
   // ==========================================================================
-  const modalBackdrop = document.getElementById('color-modal');
-  const modalCloseBtn = document.getElementById('btn-close-modal');
-  const modalFooterCloseBtn = document.getElementById('btn-modal-close-footer');
-  const modalSetThemeBtn = document.getElementById('btn-modal-set-theme');
+  function renderComparePresets() {
+    const row = document.getElementById('compare-presets-row');
+    if (!row) return;
 
-  let activeModalColor = null;
+    const comps = window.COMPARISONS_DATA || [];
+    row.innerHTML = comps.map(c => `
+      <button class="preset-compare-btn ${c.id === state.currentComparisonId ? 'active' : ''}" 
+              data-id="${c.id}" role="tab">
+        ${c.title}
+      </button>
+    `).join('');
 
-  function openColorModal(color) {
-    activeModalColor = color;
-    const rgb = hexToRgb(color.hex);
-    const hsl = rgbToHsl(rgb.r, rgb.g, rgb.b);
-    const cmyk = rgbToCmyk(rgb.r, rgb.g, rgb.b);
-    const textColor = getBestTextColor(color.hex);
-
-    // Swatch header
-    const swatchBanner = document.getElementById('modal-swatch-banner');
-    swatchBanner.style.backgroundColor = color.hex;
-    document.getElementById('modal-color-name').textContent = color.name;
-    document.getElementById('modal-color-name').style.color = textColor;
-    document.getElementById('modal-color-tagline').textContent = `${color.category} • ${color.temperature} Spectrum`;
-    document.getElementById('modal-color-tagline').style.color = textColor;
-
-    // Contrast compliance label
-    const contrastBadge = document.getElementById('modal-contrast-badge');
-    const isLight = textColor === '#0A0E17';
-    contrastBadge.textContent = isLight ? 'High Contrast • Dark Text Optimal' : 'High Contrast • Light Text Optimal';
-
-    // Codes with click-to-copy
-    const hexVal = color.hex.toUpperCase();
-    const rgbVal = `rgb(${rgb.r}, ${rgb.g}, ${rgb.b})`;
-    const hslVal = `hsl(${hsl.h}, ${hsl.s}%, ${hsl.l}%)`;
-    const cmykVal = `${cmyk.c}%, ${cmyk.m}%, ${cmyk.y}%, ${cmyk.k}%`;
-
-    setupCodePill('modal-code-hex', 'modal-val-hex', hexVal);
-    setupCodePill('modal-code-rgb', 'modal-val-rgb', rgbVal);
-    setupCodePill('modal-code-hsl', 'modal-val-hsl', hslVal);
-    setupCodePill('modal-code-cmyk', 'modal-val-cmyk', cmykVal);
-
-    // Stories & Psychology
-    document.getElementById('modal-psych-text').textContent = color.meaning;
-    document.getElementById('modal-history-text').textContent = color.history;
-
-    // Spectrum Row (Tints, Tones, Shades: 10 steps from 10% lightness to 90%)
-    const spectrumRow = document.getElementById('modal-spectrum-row');
-    spectrumRow.innerHTML = '';
-    for (let lightness = 10; lightness <= 90; lightness += 10) {
-      const stepRgb = hslToRgb(hsl.h, hsl.s, lightness);
-      const stepHex = rgbToHex(stepRgb.r, stepRgb.g, stepRgb.b);
-
-      const cell = document.createElement('div');
-      cell.className = 'spectrum-cell';
-      cell.style.backgroundColor = stepHex;
-      cell.title = `${stepHex} (${lightness}% L)`;
-      cell.addEventListener('click', () => {
-        copyToClipboard(stepHex, `Copied spectrum shade ${stepHex}`);
+    row.querySelectorAll('.preset-compare-btn').forEach(btn => {
+      btn.addEventListener('click', function () {
+        state.currentComparisonId = this.getAttribute('data-id');
+        row.querySelectorAll('.preset-compare-btn').forEach(b => b.classList.remove('active'));
+        this.classList.add('active');
+        renderCurrentComparison();
+        playTone(550, 'sine', 0.05);
       });
-      spectrumRow.appendChild(cell);
+    });
+  }
+
+  function renderCurrentComparison() {
+    const container = document.getElementById('comparison-table-container');
+    if (!container) return;
+
+    const comp = (window.COMPARISONS_DATA || []).find(c => c.id === state.currentComparisonId);
+    if (!comp) return;
+
+    const itemA = comp.itemA;
+    const itemB = comp.itemB;
+
+    // Extract shared keys
+    const keysA = Object.keys(itemA).filter(k => k !== 'name' && k !== 'system');
+
+    container.innerHTML = `
+      <div class="comparison-header-row">
+        <div>Anatomical Dimension</div>
+        <div class="comp-col-a">${itemA.name} <span style="font-size: 0.75rem; color: var(--text-muted); font-weight: normal;">(${itemA.system})</span></div>
+        <div class="comp-col-b">${itemB.name} <span style="font-size: 0.75rem; color: var(--text-muted); font-weight: normal;">(${itemB.system})</span></div>
+      </div>
+
+      ${keysA.map(key => {
+        const formattedKey = key.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase());
+        return `
+          <div class="comparison-row">
+            <div class="comp-dim-label">${formattedKey}</div>
+            <div>${itemA[key] || '—'}</div>
+            <div>${itemB[key] || '—'}</div>
+          </div>
+        `;
+      }).join('')}
+
+      <div class="comp-takeaway-box">
+        <strong>High-Yield Takeaway: </strong>${comp.keyTakeaway}
+      </div>
+    `;
+  }
+
+  // ==========================================================================
+  // Quiz Center Engine
+  // ==========================================================================
+  function initQuiz() {
+    state.quiz.filteredQuestions = [...(window.QUIZZES_DATA || [])];
+    state.quiz.currentIndex = 0;
+    state.quiz.score = 0;
+    state.quiz.answered = false;
+    renderQuizCard();
+  }
+
+  function renderQuizCard() {
+    const card = document.getElementById('quiz-card-wrapper');
+    if (!card) return;
+
+    const questions = state.quiz.filteredQuestions;
+    if (questions.length === 0) {
+      card.innerHTML = `<p>No quiz questions available.</p>`;
+      return;
     }
 
-    // Pairings Row
-    const pairingsRow = document.getElementById('modal-pairings-row');
-    pairingsRow.innerHTML = '';
-    const pairings = color.bestPairing || ['#FFFFFF', '#1B1B1E', '#FFD700', '#6366F1'];
-    pairings.forEach(pairingHex => {
-      const pBox = document.createElement('div');
-      pBox.className = 'pairing-box';
-      pBox.style.backgroundColor = pairingHex;
-      const pText = getBestTextColor(pairingHex);
-      pBox.style.color = pText;
-      pBox.textContent = pairingHex;
-      pBox.title = `Click to copy ${pairingHex}`;
-      pBox.addEventListener('click', () => {
-        copyToClipboard(pairingHex, `Copied pairing ${pairingHex}`);
+    const currentQ = questions[state.quiz.currentIndex];
+
+    card.innerHTML = `
+      <div class="quiz-top-bar">
+        <div>
+          <span class="system-tag" style="background: var(--accent-cyan); font-size: 0.75rem;">${currentQ.systemId.toUpperCase()}</span>
+          <span style="font-size: 0.8125rem; font-weight: 600; color: var(--text-muted); margin-left: 8px;">Question ${state.quiz.currentIndex + 1} of ${questions.length}</span>
+        </div>
+        <div class="quiz-score-pill">Score: ${state.quiz.score} / ${questions.length}</div>
+      </div>
+
+      <h3 class="quiz-question-text">${currentQ.question}</h3>
+
+      <div class="quiz-options-list">
+        ${currentQ.options.map((opt, idx) => `
+          <button class="quiz-option-btn" data-index="${idx}">
+            <span>${String.fromCharCode(65 + idx)}. ${opt}</span>
+            <span class="opt-icon"></span>
+          </button>
+        `).join('')}
+      </div>
+
+      <div class="quiz-explanation-box" id="quiz-explanation">
+        <strong>Explanation: </strong>${currentQ.explanation}
+      </div>
+
+      <div class="quiz-footer">
+        <div style="font-size: 0.8125rem; color: var(--text-muted);">
+          Difficulty: <strong>${currentQ.difficulty}</strong>
+        </div>
+        <button class="btn-primary" id="btn-next-question" style="display: none; padding: 10px 22px; font-size: 0.875rem;">
+          <span>${state.quiz.currentIndex === questions.length - 1 ? 'Finish Quiz' : 'Next Question'}</span>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="5" y1="12" x2="19" y2="12"></line>
+            <polyline points="12 5 19 12 12 19"></polyline>
+          </svg>
+        </button>
+      </div>
+    `;
+
+    // Attach Option Click Listeners
+    card.querySelectorAll('.quiz-option-btn').forEach(btn => {
+      btn.addEventListener('click', function () {
+        if (state.quiz.answered) return;
+        state.quiz.answered = true;
+
+        const selectedIdx = parseInt(this.getAttribute('data-index'), 10);
+        const correctIdx = currentQ.answer;
+
+        if (selectedIdx === correctIdx) {
+          this.classList.add('correct');
+          state.quiz.score++;
+          playSuccessChime();
+        } else {
+          this.classList.add('incorrect');
+          // Highlight correct option
+          card.querySelector(`.quiz-option-btn[data-index="${correctIdx}"]`)?.classList.add('correct');
+          playErrorChime();
+        }
+
+        // Show Explanation & Next button
+        document.getElementById('quiz-explanation')?.classList.add('active');
+        const nextBtn = document.getElementById('btn-next-question');
+        if (nextBtn) nextBtn.style.display = 'inline-flex';
       });
-      pairingsRow.appendChild(pBox);
     });
 
-    // Show modal
-    modalBackdrop.classList.add('active');
-    modalBackdrop.setAttribute('aria-hidden', 'false');
+    document.getElementById('btn-next-question')?.addEventListener('click', () => {
+      if (state.quiz.currentIndex < questions.length - 1) {
+        state.quiz.currentIndex++;
+        state.quiz.answered = false;
+        renderQuizCard();
+        playTone(550, 'sine', 0.04);
+      } else {
+        // Quiz completed
+        renderQuizResults();
+      }
+    });
+  }
+
+  function renderQuizResults() {
+    const card = document.getElementById('quiz-card-wrapper');
+    if (!card) return;
+
+    const total = state.quiz.filteredQuestions.length;
+    const percentage = Math.round((state.quiz.score / total) * 100);
+
+    card.innerHTML = `
+      <div style="text-align: center; padding: 30px 10px;">
+        <div style="font-size: 3.5rem; margin-bottom: 10px;">🏆</div>
+        <h3 style="font-size: 2rem; font-weight: 800; color: var(--text-primary); margin-bottom: 10px;">Quiz Complete!</h3>
+        <p style="font-size: 1.125rem; color: var(--text-muted); margin-bottom: 24px;">
+          You scored <strong>${state.quiz.score} out of ${total}</strong> (${percentage}%)
+        </p>
+
+        <div style="display: flex; justify-content: center; gap: 14px;">
+          <button class="btn-primary" id="btn-retake-quiz">
+            <span>Retake Quiz</span>
+          </button>
+        </div>
+      </div>
+    `;
+
+    document.getElementById('btn-retake-quiz')?.addEventListener('click', () => {
+      initQuiz();
+      playTone(520, 'sine', 0.05);
+    });
+  }
+
+  // ==========================================================================
+  // Medical Glossary Engine
+  // ==========================================================================
+  function renderGlossary() {
+    const grid = document.getElementById('glossary-grid');
+    if (!grid) return;
+
+    const searchVal = (document.getElementById('glossary-search-input')?.value || '').toLowerCase().trim();
+    const terms = window.GLOSSARY_DATA || [];
+
+    const filtered = terms.filter(t => {
+      return !searchVal || 
+        t.term.toLowerCase().includes(searchVal) ||
+        t.definition.toLowerCase().includes(searchVal) ||
+        (t.root && t.root.toLowerCase().includes(searchVal));
+    });
+
+    if (filtered.length === 0) {
+      grid.innerHTML = `<div style="grid-column: 1 / -1; text-align: center; padding: 40px; color: var(--text-muted);">No glossary terms matched your query.</div>`;
+      return;
+    }
+
+    grid.innerHTML = filtered.map(t => `
+      <div class="glossary-card">
+        <h4 class="glossary-term">${t.term}</h4>
+        <div class="glossary-pronunciation">${t.pronunciation}</div>
+        <div class="glossary-root">${t.root}</div>
+        <p class="glossary-def">${t.definition}</p>
+        <div class="glossary-clinical">
+          <strong>Clinical Note: </strong>${t.clinicalSignificance}
+        </div>
+      </div>
+    `).join('');
+  }
+
+  // ==========================================================================
+  // Master Organ Detail Modal (15 Standardized Points!)
+  // ==========================================================================
+  function openOrganModal(organId) {
+    const organ = (window.ORGANS_DATA || []).find(o => o.id === organId);
+    if (!organ) return;
+
+    const system = (window.SYSTEMS_DATA || []).find(s => s.id === organ.systemId);
+    const modal = document.getElementById('organ-detail-modal');
+    const header = document.getElementById('organ-modal-header');
+    const body = document.getElementById('organ-modal-body');
+
+    if (!modal || !header || !body) return;
+
+    const isSaved = state.bookmarks.includes(organ.id);
+
+    // Header Content
+    header.innerHTML = `
+      <div style="display: flex; align-items: flex-start; justify-content: space-between; gap: 20px;">
+        <div>
+          <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
+            <span class="system-tag" style="background-color: ${system ? system.color : 'var(--accent-cyan)'};">
+              ${system ? system.name : organ.systemId}
+            </span>
+            <span class="region-tag">${organ.bodyRegion ? organ.bodyRegion.toUpperCase() : 'ANATOMY'}</span>
+          </div>
+          <h2 id="modal-organ-name" style="font-size: 2rem; font-weight: 800; color: var(--text-primary); line-height: 1.2;">
+            ${organ.name}
+          </h2>
+          <div style="font-size: 1rem; color: var(--text-muted); font-style: italic; margin-top: 4px;">
+            ${organ.latinName || ''} <span style="color: var(--accent-cyan); font-family: var(--font-mono); font-size: 0.875rem; margin-left: 10px;">/${organ.pronunciation || ''}/</span>
+          </div>
+        </div>
+
+        <button class="action-icon-btn btn-modal-bookmark ${isSaved ? 'bookmarked' : ''}" 
+                data-id="${organ.id}" 
+                title="${isSaved ? 'Remove Bookmark' : 'Save Bookmark'}" 
+                style="margin-right: 40px;">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="${isSaved ? 'currentColor' : 'none'}" stroke="currentColor" stroke-width="2">
+            <path d="m19 21-7-4-7 4V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16z"/>
+          </svg>
+        </button>
+      </div>
+    `;
+
+    // Standardized 15-Point Body Content
+    body.innerHTML = `
+      <!-- 1. Overview -->
+      <div class="detail-section">
+        <h3 class="detail-section-title">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+          1. Overview
+        </h3>
+        <p style="font-size: 1.0625rem; line-height: 1.7; color: var(--text-secondary);">${organ.overview}</p>
+      </div>
+
+      <!-- 2. Anatomical Location -->
+      <div class="detail-section">
+        <h3 class="detail-section-title">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+          2. Anatomical Location
+        </h3>
+        <div style="background: var(--bg-tertiary); padding: 16px 20px; border-radius: var(--radius-lg); font-size: 0.9375rem; color: var(--text-secondary); line-height: 1.6;">
+          ${organ.location}
+        </div>
+      </div>
+
+      <!-- 3. Anatomical Illustration -->
+      <div class="detail-section">
+        <h3 class="detail-section-title">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1z"></path></svg>
+          3. Anatomical Illustration & Schematic
+        </h3>
+        <div style="background: var(--bg-secondary); border: 1px solid var(--border-subtle); border-radius: var(--radius-xl); padding: 30px; display: flex; justify-content: center; align-items: center;">
+          ${generateMiniOrganDiagram(organ)}
+        </div>
+      </div>
+
+      <!-- 4. Macroscopic & Microscopic Structure -->
+      <div class="detail-section">
+        <h3 class="detail-section-title">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path></svg>
+          4. Macroscopic & Microscopic Structure
+        </h3>
+        <div style="display: grid; grid-template-columns: 1fr; gap: 14px;">
+          ${organ.structure.macroscopic ? `
+            <div style="background: var(--bg-primary); padding: 16px; border-radius: var(--radius-md); border-left: 3px solid var(--accent-cyan);">
+              <strong style="color: var(--text-primary);">Gross Anatomy: </strong>${organ.structure.macroscopic}
+            </div>` : ''}
+          ${organ.structure.microscopic ? `
+            <div style="background: var(--bg-primary); padding: 16px; border-radius: var(--radius-md); border-left: 3px solid var(--accent-teal);">
+              <strong style="color: var(--text-primary);">Histology & Cells: </strong>${organ.structure.microscopic}
+            </div>` : ''}
+        </div>
+      </div>
+
+      <!-- 5. Primary Functions -->
+      <div class="detail-section">
+        <h3 class="detail-section-title">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 11 12 14 22 4"></polyline><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path></svg>
+          5. Primary Functions
+        </h3>
+        <ul style="list-style: none; display: flex; flex-direction: column; gap: 10px;">
+          ${(organ.primaryFunctions || []).map(f => `
+            <li style="display: flex; gap: 12px; align-items: flex-start; font-size: 0.9375rem; color: var(--text-secondary);">
+              <span style="color: var(--accent-cyan); font-weight: bold; margin-top: 1px;">✓</span>
+              <span>${f}</span>
+            </li>
+          `).join('')}
+        </ul>
+      </div>
+
+      <!-- 6. How It Works (Step-by-Step Biological Mechanism) -->
+      <div class="detail-section">
+        <h3 class="detail-section-title">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+          6. How It Works (Biological Mechanism)
+        </h3>
+        <div style="background: var(--bg-tertiary); padding: 24px; border-radius: var(--radius-lg); font-size: 0.9375rem; line-height: 1.7; color: var(--text-secondary); white-space: pre-line;">
+          <strong>Inputs / Signals: </strong>${organ.howItWorks.inputs}
+          
+          <strong>Mechanism:</strong>
+          ${organ.howItWorks.mechanism}
+          
+          <strong>Cells Involved: </strong>${organ.howItWorks.cellsInvolved}
+          <strong>Outputs / Response: </strong>${organ.howItWorks.outputs}
+          <strong>Systemic Impact: </strong>${organ.howItWorks.systemicImpact}
+        </div>
+      </div>
+
+      <!-- 7. Related Body Systems -->
+      <div class="detail-section">
+        <h3 class="detail-section-title">7. Related Body Systems</h3>
+        <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+          ${(organ.relatedSystemIds || [organ.systemId]).map(sysId => {
+            const s = (window.SYSTEMS_DATA || []).find(x => x.id === sysId);
+            return `<span class="system-tag" style="background-color: ${s ? s.color : 'var(--accent-cyan)'};">${s ? s.name : sysId}</span>`;
+          }).join('')}
+        </div>
+      </div>
+
+      <!-- 8. Interactions with Other Organs -->
+      <div class="detail-section">
+        <h3 class="detail-section-title">8. Interactions with Other Organs</h3>
+        <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 14px;">
+          ${(organ.interactions || []).map(inter => `
+            <div style="background: var(--bg-primary); border: 1px solid var(--border-subtle); padding: 16px; border-radius: var(--radius-md);">
+              <h4 style="font-weight: 700; color: var(--accent-cyan); margin-bottom: 6px;">↔ ${inter.organ}</h4>
+              <p style="font-size: 0.875rem; color: var(--text-secondary); line-height: 1.5;">${inter.relationship}</p>
+            </div>
+          `).join('')}
+        </div>
+      </div>
+
+      <!-- 9. Important Biological Processes -->
+      <div class="detail-section">
+        <h3 class="detail-section-title">9. Important Biological Processes</h3>
+        <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+          ${(organ.processes || []).map(p => `
+            <span class="organ-chip" style="background: var(--bg-tertiary); font-weight: 600;">⚡ ${p}</span>
+          `).join('')}
+        </div>
+      </div>
+
+      <!-- 10. Interesting Facts -->
+      <div class="detail-section">
+        <h3 class="detail-section-title">10. Scientifically Proven Facts</h3>
+        <div style="display: flex; flex-direction: column; gap: 10px;">
+          ${(organ.facts || []).map(fact => `
+            <div style="background: var(--accent-amber-light); border-left: 4px solid var(--accent-amber); padding: 14px 18px; border-radius: 0 var(--radius-md) var(--radius-md) 0; font-size: 0.9375rem; color: var(--text-secondary);">
+              💡 ${fact}
+            </div>
+          `).join('')}
+        </div>
+      </div>
+
+      <!-- 11. Common Conditions -->
+      <div class="detail-section">
+        <h3 class="detail-section-title">11. Common Conditions & Clinical Relevance</h3>
+        <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 14px;">
+          ${(organ.conditions || []).map(c => `
+            <div style="background: var(--bg-primary); border: 1px solid var(--border-subtle); padding: 16px; border-radius: var(--radius-md); border-top: 3px solid var(--accent-coral);">
+              <h4 style="font-weight: 700; color: var(--text-primary); margin-bottom: 6px;">${c.name}</h4>
+              <p style="font-size: 0.875rem; color: var(--text-secondary); line-height: 1.5;">${c.desc}</p>
+            </div>
+          `).join('')}
+        </div>
+      </div>
+
+      <!-- 12. Quick Revision -->
+      <div class="detail-section">
+        <h3 class="detail-section-title">12. Quick Revision Points</h3>
+        <div style="background: var(--bg-tertiary); padding: 20px; border-radius: var(--radius-lg);">
+          <ul style="list-style: none; display: flex; flex-direction: column; gap: 8px;">
+            ${(organ.quickRevision || []).map(r => `
+              <li style="font-size: 0.9375rem; color: var(--text-secondary); display: flex; gap: 8px;">
+                <span style="color: var(--accent-teal);">▸</span>
+                <span>${r}</span>
+              </li>
+            `).join('')}
+          </ul>
+        </div>
+      </div>
+
+      <!-- 13. Knowledge Check Quiz -->
+      <div class="detail-section">
+        <h3 class="detail-section-title">13. Knowledge Check</h3>
+        <div id="modal-organ-quiz-container">
+          ${(organ.quizQuestions || []).map((q, qIdx) => `
+            <div style="background: var(--bg-primary); border: 1px solid var(--border-subtle); border-radius: var(--radius-lg); padding: 20px; margin-bottom: 16px;">
+              <h4 style="font-size: 1rem; font-weight: 700; margin-bottom: 14px;">${q.question}</h4>
+              <div style="display: flex; flex-direction: column; gap: 8px;">
+                ${q.options.map((opt, oIdx) => `
+                  <button class="quiz-option-btn organ-modal-quiz-btn" data-q-idx="${qIdx}" data-o-idx="${oIdx}" data-correct="${q.answer}" style="padding: 10px 14px; font-size: 0.875rem;">
+                    <span>${opt}</span>
+                  </button>
+                `).join('')}
+              </div>
+              <div class="modal-quiz-explanation" id="modal-q-exp-${qIdx}" style="display: none; margin-top: 12px; font-size: 0.875rem; color: var(--accent-emerald);">
+                ✓ ${q.explanation}
+              </div>
+            </div>
+          `).join('')}
+        </div>
+      </div>
+
+      <!-- 14. Related Organs -->
+      <div class="detail-section">
+        <h3 class="detail-section-title">14. Related Organs</h3>
+        <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+          ${(organ.relatedOrgans || []).map(relId => {
+            const relOrgan = (window.ORGANS_DATA || []).find(o => o.id === relId);
+            return relOrgan ? `
+              <button class="organ-chip btn-jump-organ" data-id="${relOrgan.id}" style="font-weight: 700; background: var(--bg-tertiary); padding: 8px 14px;">
+                ${relOrgan.name} →
+              </button>
+            ` : '';
+          }).join('')}
+        </div>
+      </div>
+
+      <!-- 15. References -->
+      <div class="detail-section">
+        <h3 class="detail-section-title">15. Scientific References</h3>
+        <ul style="list-style: none; font-size: 0.8125rem; color: var(--text-muted); display: flex; flex-direction: column; gap: 6px;">
+          ${(organ.references || []).map(ref => `<li>📖 ${ref}</li>`).join('')}
+        </ul>
+      </div>
+    `;
+
+    // Modal Knowledge Check Listeners
+    body.querySelectorAll('.organ-modal-quiz-btn').forEach(btn => {
+      btn.addEventListener('click', function () {
+        const qIdx = this.getAttribute('data-q-idx');
+        const oIdx = parseInt(this.getAttribute('data-o-idx'), 10);
+        const correct = parseInt(this.getAttribute('data-correct'), 10);
+
+        if (oIdx === correct) {
+          this.classList.add('correct');
+          playSuccessChime();
+        } else {
+          this.classList.add('incorrect');
+          playErrorChime();
+        }
+
+        const exp = document.getElementById(`modal-q-exp-${qIdx}`);
+        if (exp) exp.style.display = 'block';
+      });
+    });
+
+    // Related Organs Jump buttons
+    body.querySelectorAll('.btn-jump-organ').forEach(btn => {
+      btn.addEventListener('click', function () {
+        const id = this.getAttribute('data-id');
+        openOrganModal(id);
+        playTone(600, 'sine', 0.04);
+      });
+    });
+
+    // Bookmark button in modal
+    header.querySelector('.btn-modal-bookmark')?.addEventListener('click', function () {
+      const id = this.getAttribute('data-id');
+      toggleBookmark(id);
+      const isNowSaved = state.bookmarks.includes(id);
+      this.classList.toggle('bookmarked', isNowSaved);
+      this.querySelector('svg').setAttribute('fill', isNowSaved ? 'currentColor' : 'none');
+    });
+
+    // Show Modal
+    modal.classList.add('active');
     document.body.style.overflow = 'hidden';
+    playTone(500, 'sine', 0.05);
   }
 
-  function setupCodePill(pillId, valId, textToCopy) {
-    const pill = document.getElementById(pillId);
-    const valEl = document.getElementById(valId);
-    valEl.textContent = textToCopy;
-    pill.onclick = () => {
-      copyToClipboard(textToCopy, `Copied ${textToCopy}!`);
-    };
-  }
-
-  function closeModal() {
-    modalBackdrop.classList.remove('active');
-    modalBackdrop.setAttribute('aria-hidden', 'true');
-    document.body.style.overflow = '';
-  }
-
-  if (modalCloseBtn) modalCloseBtn.addEventListener('click', closeModal);
-  if (modalFooterCloseBtn) modalFooterCloseBtn.addEventListener('click', closeModal);
-  if (modalBackdrop) {
-    modalBackdrop.addEventListener('click', (e) => {
-      if (e.target === modalBackdrop) closeModal();
-    });
-  }
-  document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape' && modalBackdrop.classList.contains('active')) {
-      closeModal();
-    }
-  });
-
-  // Modal action: Set ambient site glow to active color
-  if (modalSetThemeBtn) {
-    modalSetThemeBtn.addEventListener('click', () => {
-      if (!activeModalColor) return;
-      applyDynamicAccent(activeModalColor.hex);
-      showToast(`Site ambient glow set to ${activeModalColor.name}!`);
-    });
-  }
-
-  // ==========================================================================
-  // 8. Dynamic Accent & Ambient Glow Controller
-  // ==========================================================================
-  function applyDynamicAccent(hex) {
-    const rgb = hexToRgb(hex);
-    document.documentElement.style.setProperty('--primary-accent', hex);
-    document.documentElement.style.setProperty('--primary-accent-rgb', `${rgb.r}, ${rgb.g}, ${rgb.b}`);
-
-    // Update ambient spheres
-    const sphere1 = document.getElementById('ambient-sphere-1');
-    if (sphere1) {
-      sphere1.style.background = `radial-gradient(circle, ${hex} 0%, transparent 70%)`;
+  function closeOrganModal() {
+    const modal = document.getElementById('organ-detail-modal');
+    if (modal) {
+      modal.classList.remove('active');
+      document.body.style.overflow = '';
     }
   }
 
   // ==========================================================================
-  // 9. Spotlight & Surprise Me Feature
+  // Global Search Modal (Ctrl+K)
   // ==========================================================================
-  const btnSurprise = document.getElementById('btn-surprise-me');
-  const btnInspectSpotlight = document.getElementById('btn-inspect-spotlight');
-  const btnCopySpotlightHex = document.getElementById('btn-copy-spotlight-hex');
-
-  let currentSpotlightColor = COLOR_DATABASE[0];
-
-  function updateHeroSpotlight(color) {
-    currentSpotlightColor = color;
-    const swatchBox = document.getElementById('spotlight-swatch-box');
-    const nameEl = document.getElementById('spotlight-name');
-    const subEl = document.getElementById('spotlight-sub');
-    const hexEl = document.getElementById('spotlight-hex');
-    const descEl = document.getElementById('spotlight-desc');
-
-    if (swatchBox) swatchBox.style.backgroundColor = color.hex;
-    if (nameEl) nameEl.textContent = color.name;
-    if (subEl) subEl.textContent = `${color.category} • ${color.temperature} • ${color.family.toUpperCase()}`;
-    if (hexEl) hexEl.textContent = color.hex;
-    if (descEl) descEl.textContent = color.history;
-
-    applyDynamicAccent(color.hex);
+  function openSearchModal() {
+    const modal = document.getElementById('global-search-modal');
+    const input = document.getElementById('global-search-input');
+    if (modal) {
+      modal.classList.add('active');
+      document.body.style.overflow = 'hidden';
+      if (input) {
+        input.value = '';
+        input.focus();
+        handleGlobalSearch('');
+      }
+      playTone(550, 'sine', 0.04);
+    }
   }
 
-  if (btnSurprise) {
-    btnSurprise.addEventListener('click', () => {
-      const randomIndex = Math.floor(Math.random() * COLOR_DATABASE.length);
-      const chosen = COLOR_DATABASE[randomIndex];
-      updateHeroSpotlight(chosen);
-      showToast(`Spotlight: ${chosen.name} (${chosen.hex})`);
+  function closeSearchModal() {
+    const modal = document.getElementById('global-search-modal');
+    if (modal) {
+      modal.classList.remove('active');
+      document.body.style.overflow = '';
+    }
+  }
+
+  function handleGlobalSearch(query) {
+    const resultsContainer = document.getElementById('global-search-results');
+    if (!resultsContainer) return;
+
+    const q = query.toLowerCase().trim();
+    if (!q) {
+      resultsContainer.innerHTML = `
+        <div style="padding: 24px; text-align: center; color: var(--text-muted); font-size: 0.9375rem;">
+          Type any organ name (e.g. Heart, Brain), system, or medical term...
+        </div>
+      `;
+      return;
+    }
+
+    const organs = (window.ORGANS_DATA || []).filter(o => 
+      o.name.toLowerCase().includes(q) || 
+      (o.latinName && o.latinName.toLowerCase().includes(q)) || 
+      o.overview.toLowerCase().includes(q)
+    );
+
+    const systems = (window.SYSTEMS_DATA || []).filter(s => 
+      s.name.toLowerCase().includes(q) || 
+      s.overview.toLowerCase().includes(q)
+    );
+
+    const glossary = (window.GLOSSARY_DATA || []).filter(g => 
+      g.term.toLowerCase().includes(q) || 
+      g.definition.toLowerCase().includes(q)
+    );
+
+    let html = '';
+
+    if (organs.length > 0) {
+      html += `<div style="font-size: 0.75rem; font-weight: 700; color: var(--text-muted); padding: 8px 16px; text-transform: uppercase;">Organs & Structures (${organs.length})</div>`;
+      organs.slice(0, 5).forEach(o => {
+        html += `
+          <div class="search-result-row search-item-organ" data-id="${o.id}">
+            <div>
+              <div style="font-weight: 700; color: var(--text-primary);">${o.name}</div>
+              <div style="font-size: 0.75rem; color: var(--text-muted); font-style: italic;">${o.latinName || ''}</div>
+            </div>
+            <span class="system-tag" style="background: var(--accent-cyan); font-size: 0.625rem;">${o.systemId}</span>
+          </div>
+        `;
+      });
+    }
+
+    if (systems.length > 0) {
+      html += `<div style="font-size: 0.75rem; font-weight: 700; color: var(--text-muted); padding: 8px 16px; text-transform: uppercase; margin-top: 12px;">Organ Systems (${systems.length})</div>`;
+      systems.slice(0, 3).forEach(s => {
+        html += `
+          <div class="search-result-row search-item-system" data-id="${s.id}">
+            <div>
+              <div style="font-weight: 700; color: var(--text-primary);">${s.name}</div>
+              <div style="font-size: 0.75rem; color: var(--text-muted);">${s.tagline}</div>
+            </div>
+            <span class="system-tag" style="background: ${s.color}; font-size: 0.625rem;">System</span>
+          </div>
+        `;
+      });
+    }
+
+    if (glossary.length > 0) {
+      html += `<div style="font-size: 0.75rem; font-weight: 700; color: var(--text-muted); padding: 8px 16px; text-transform: uppercase; margin-top: 12px;">Medical Terms (${glossary.length})</div>`;
+      glossary.slice(0, 4).forEach(g => {
+        html += `
+          <div class="search-result-row search-item-glossary">
+            <div>
+              <div style="font-weight: 700; color: var(--text-primary);">${g.term}</div>
+              <div style="font-size: 0.75rem; color: var(--text-muted);">${g.definition.substring(0, 80)}...</div>
+            </div>
+            <span class="organ-chip" style="font-size: 0.625rem;">Term</span>
+          </div>
+        `;
+      });
+    }
+
+    if (!html) {
+      html = `<div style="padding: 24px; text-align: center; color: var(--text-muted);">No results found for "${query}".</div>`;
+    }
+
+    resultsContainer.innerHTML = html;
+
+    resultsContainer.querySelectorAll('.search-item-organ').forEach(el => {
+      el.addEventListener('click', function () {
+        closeSearchModal();
+        openOrganModal(this.getAttribute('data-id'));
+      });
+    });
+
+    resultsContainer.querySelectorAll('.search-item-system').forEach(el => {
+      el.addEventListener('click', function () {
+        closeSearchModal();
+        const sysId = this.getAttribute('data-id');
+        state.currentSystemFilter = sysId;
+        renderBodySVG(state.currentView, sysId);
+        document.getElementById('body-explorer')?.scrollIntoView({ behavior: 'smooth' });
+      });
     });
   }
 
-  if (btnInspectSpotlight) {
-    btnInspectSpotlight.addEventListener('click', () => {
-      openColorModal(currentSpotlightColor);
+  // ==========================================================================
+  // Bookmarks & Study Progress Drawer
+  // ==========================================================================
+  function toggleBookmark(organId) {
+    const idx = state.bookmarks.indexOf(organId);
+    if (idx >= 0) {
+      state.bookmarks.splice(idx, 1);
+    } else {
+      state.bookmarks.push(organId);
+      playTone(700, 'sine', 0.05);
+    }
+    localStorage.setItem('hbe_bookmarks', JSON.stringify(state.bookmarks));
+    updateBookmarksBadge();
+    selectOrgan(state.selectedOrganId);
+  }
+
+  function toggleMastery(organId, isChecked) {
+    const idx = state.mastered.indexOf(organId);
+    if (isChecked && idx < 0) {
+      state.mastered.push(organId);
+      playSuccessChime();
+    } else if (!isChecked && idx >= 0) {
+      state.mastered.splice(idx, 1);
+    }
+    localStorage.setItem('hbe_mastered', JSON.stringify(state.mastered));
+  }
+
+  function updateBookmarksBadge() {
+    const badge = document.getElementById('bookmarks-count-badge');
+    if (badge) {
+      badge.textContent = state.bookmarks.length;
+      badge.style.display = state.bookmarks.length > 0 ? 'flex' : 'none';
+    }
+  }
+
+  function openBookmarksModal() {
+    const modal = document.getElementById('bookmarks-modal');
+    const body = document.getElementById('bookmarks-modal-body');
+    if (!modal || !body) return;
+
+    const totalOrgans = (window.ORGANS_DATA || []).length;
+    const masteredCount = state.mastered.length;
+    const progressPct = totalOrgans > 0 ? Math.round((masteredCount / totalOrgans) * 100) : 0;
+
+    body.innerHTML = `
+      <!-- Progress Bar -->
+      <div style="margin-bottom: 24px;">
+        <div style="display: flex; justify-content: space-between; font-size: 0.875rem; font-weight: 700; margin-bottom: 8px;">
+          <span>Curriculum Mastery</span>
+          <span style="color: var(--accent-cyan);">${progressPct}% (${masteredCount} of ${totalOrgans} structures)</span>
+        </div>
+        <div style="height: 10px; border-radius: 5px; background: var(--border-subtle); overflow: hidden;">
+          <div style="width: ${progressPct}%; height: 100%; background: linear-gradient(90deg, var(--accent-cyan), var(--accent-teal)); border-radius: 5px; transition: width 0.3s ease;"></div>
+        </div>
+      </div>
+
+      <!-- Bookmarked Items -->
+      <h3 style="font-size: 1.125rem; font-weight: 700; margin-bottom: 14px;">Saved Bookmarks (${state.bookmarks.length})</h3>
+      ${state.bookmarks.length === 0 ? `
+        <div style="text-align: center; padding: 30px; color: var(--text-muted); background: var(--bg-primary); border-radius: var(--radius-lg);">
+          No organs bookmarked yet. Click the bookmark icon on any organ to save it here for fast revision!
+        </div>
+      ` : `
+        <div style="display: flex; flex-direction: column; gap: 8px; max-height: 280px; overflow-y: auto;">
+          ${state.bookmarks.map(id => {
+            const org = (window.ORGANS_DATA || []).find(o => o.id === id);
+            if (!org) return '';
+            return `
+              <div style="display: flex; align-items: center; justify-content: space-between; padding: 12px 16px; background: var(--bg-primary); border-radius: var(--radius-md);">
+                <div>
+                  <div style="font-weight: 700; color: var(--text-primary);">${org.name}</div>
+                  <div style="font-size: 0.75rem; color: var(--text-muted); font-style: italic;">${org.latinName || ''}</div>
+                </div>
+                <div style="display: flex; gap: 8px;">
+                  <button class="btn-open-detail btn-bookmark-jump" data-id="${org.id}" style="width: auto; padding: 6px 12px; font-size: 0.75rem;">Study</button>
+                  <button class="action-icon-btn btn-bookmark-remove" data-id="${org.id}" style="width: 28px; height: 28px;" title="Remove">✕</button>
+                </div>
+              </div>
+            `;
+          }).join('')}
+        </div>
+      `}
+    `;
+
+    body.querySelectorAll('.btn-bookmark-jump').forEach(btn => {
+      btn.addEventListener('click', function () {
+        closeBookmarksModal();
+        openOrganModal(this.getAttribute('data-id'));
+      });
+    });
+
+    body.querySelectorAll('.btn-bookmark-remove').forEach(btn => {
+      btn.addEventListener('click', function () {
+        toggleBookmark(this.getAttribute('data-id'));
+        openBookmarksModal();
+      });
+    });
+
+    modal.classList.add('active');
+    document.body.style.overflow = 'hidden';
+    playTone(550, 'sine', 0.04);
+  }
+
+  function closeBookmarksModal() {
+    const modal = document.getElementById('bookmarks-modal');
+    if (modal) {
+      modal.classList.remove('active');
+      document.body.style.overflow = '';
+    }
+  }
+
+  // ==========================================================================
+  // Hero Live Autocomplete Search Suggestions
+  // ==========================================================================
+  function setupHeroSearch() {
+    const input = document.getElementById('hero-search-input');
+    const dropdown = document.getElementById('hero-suggestions');
+    const submitBtn = document.getElementById('hero-search-submit');
+
+    if (!input || !dropdown) return;
+
+    input.addEventListener('input', function () {
+      const q = this.value.toLowerCase().trim();
+      if (!q) {
+        dropdown.classList.remove('active');
+        return;
+      }
+
+      const matches = (window.ORGANS_DATA || []).filter(o => 
+        o.name.toLowerCase().includes(q) || 
+        (o.latinName && o.latinName.toLowerCase().includes(q)) || 
+        o.overview.toLowerCase().includes(q)
+      ).slice(0, 5);
+
+      if (matches.length === 0) {
+        dropdown.classList.remove('active');
+        return;
+      }
+
+      dropdown.innerHTML = matches.map(m => `
+        <div class="suggestion-item" data-id="${m.id}">
+          <div class="item-info">
+            <span class="item-name">${m.name}</span>
+            <span class="item-latin">${m.latinName || ''}</span>
+          </div>
+          <span class="suggestion-badge">${m.category}</span>
+        </div>
+      `).join('');
+
+      dropdown.classList.add('active');
+
+      dropdown.querySelectorAll('.suggestion-item').forEach(item => {
+        item.addEventListener('click', function () {
+          const id = this.getAttribute('data-id');
+          dropdown.classList.remove('active');
+          input.value = '';
+          openOrganModal(id);
+        });
+      });
+    });
+
+    submitBtn?.addEventListener('click', function () {
+      const q = input.value.trim();
+      if (q) {
+        openSearchModal();
+        const searchInput = document.getElementById('global-search-input');
+        if (searchInput) {
+          searchInput.value = q;
+          handleGlobalSearch(q);
+        }
+      }
+    });
+
+    // Close suggestions on outside click
+    document.addEventListener('click', function (e) {
+      if (!input.contains(e.target) && !dropdown.contains(e.target)) {
+        dropdown.classList.remove('active');
+      }
     });
   }
 
-  if (btnCopySpotlightHex) {
-    btnCopySpotlightHex.addEventListener('click', () => {
-      copyToClipboard(currentSpotlightColor.hex, `Copied ${currentSpotlightColor.name} (${currentSpotlightColor.hex})`);
+  // ==========================================================================
+  // Random / Surprise Me Spotlight
+  // ==========================================================================
+  function openRandomOrganSpotlight() {
+    const organs = window.ORGANS_DATA || [];
+    if (organs.length === 0) return;
+    const randomOrgan = organs[Math.floor(Math.random() * organs.length)];
+    openOrganModal(randomOrgan.id);
+    playSuccessChime();
+  }
+
+  // ==========================================================================
+  // Global Event Listeners & Initialization
+  // ==========================================================================
+  function init() {
+    // Apply Theme
+    document.body.setAttribute('data-theme', state.theme);
+
+    // Render Components
+    renderBodySVG(state.currentView, state.currentSystemFilter);
+    selectOrgan(state.selectedOrganId);
+    renderCategories();
+    renderProcessTabs();
+    renderCurrentProcess();
+    renderSystems();
+    renderAlphabetBar();
+    filterDirectory();
+    renderComparePresets();
+    renderCurrentComparison();
+    initQuiz();
+    renderGlossary();
+    setupHeroSearch();
+    updateBookmarksBadge();
+
+    // Theme Toggle
+    document.getElementById('btn-theme-toggle')?.addEventListener('click', () => {
+      state.theme = state.theme === 'light' ? 'dark' : 'light';
+      document.body.setAttribute('data-theme', state.theme);
+      localStorage.setItem('hbe_theme', state.theme);
+      playTone(550, 'sine', 0.05);
+    });
+
+    // Sound Toggle
+    document.getElementById('btn-sound-toggle')?.addEventListener('click', () => {
+      state.soundEnabled = !state.soundEnabled;
+      localStorage.setItem('hbe_sound', state.soundEnabled);
+      playTone(state.soundEnabled ? 600 : 300, 'sine', 0.05);
+    });
+
+    // View Switchers (Anterior / Posterior)
+    document.getElementById('btn-view-front')?.addEventListener('click', function () {
+      state.currentView = 'front';
+      document.querySelectorAll('.view-toggle-btn').forEach(b => b.classList.remove('active'));
+      this.classList.add('active');
+      renderBodySVG('front', state.currentSystemFilter);
+      playTone(500, 'sine', 0.04);
+    });
+
+    document.getElementById('btn-view-back')?.addEventListener('click', function () {
+      state.currentView = 'back';
+      document.querySelectorAll('.view-toggle-btn').forEach(b => b.classList.remove('active'));
+      this.classList.add('active');
+      renderBodySVG('back', state.currentSystemFilter);
+      playTone(500, 'sine', 0.04);
+    });
+
+    // Explorer System Filter Pills
+    document.querySelectorAll('#explorer-system-filters .filter-pill').forEach(pill => {
+      pill.addEventListener('click', function () {
+        document.querySelectorAll('#explorer-system-filters .filter-pill').forEach(p => p.classList.remove('active'));
+        this.classList.add('active');
+        state.currentSystemFilter = this.getAttribute('data-system');
+        renderBodySVG(state.currentView, state.currentSystemFilter);
+        playTone(520, 'sine', 0.04);
+      });
+    });
+
+    // Inspector Action Buttons
+    document.getElementById('btn-inspect-full-detail')?.addEventListener('click', () => {
+      openOrganModal(state.selectedOrganId);
+    });
+
+    document.getElementById('inspect-bookmark-btn')?.addEventListener('click', () => {
+      toggleBookmark(state.selectedOrganId);
+    });
+
+    // Directory Search & Filters
+    document.getElementById('directory-search-input')?.addEventListener('input', filterDirectory);
+    document.getElementById('directory-category-select')?.addEventListener('change', filterDirectory);
+    document.getElementById('directory-region-select')?.addEventListener('change', filterDirectory);
+
+    // Glossary Search
+    document.getElementById('glossary-search-input')?.addEventListener('input', renderGlossary);
+
+    // Modal Triggers & Closers
+    document.getElementById('btn-search-trigger')?.addEventListener('click', openSearchModal);
+    document.getElementById('btn-close-search-modal')?.addEventListener('click', closeSearchModal);
+
+    document.getElementById('btn-bookmarks-toggle')?.addEventListener('click', openBookmarksModal);
+    document.getElementById('btn-close-bookmarks-modal')?.addEventListener('click', closeBookmarksModal);
+
+    document.getElementById('btn-close-organ-modal')?.addEventListener('click', closeOrganModal);
+
+    // Random Organ Spotlight
+    document.getElementById('btn-surprise-me')?.addEventListener('click', openRandomOrganSpotlight);
+    document.getElementById('footer-random-link')?.addEventListener('click', (e) => {
+      e.preventDefault();
+      openRandomOrganSpotlight();
+    });
+
+    // Search Input in Global Modal
+    document.getElementById('global-search-input')?.addEventListener('input', function () {
+      handleGlobalSearch(this.value);
+    });
+
+    // Keyboard Shortcuts (Ctrl+K, Cmd+K, Escape)
+    document.addEventListener('keydown', function (e) {
+      if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
+        e.preventDefault();
+        openSearchModal();
+      } else if (e.key === 'Escape') {
+        closeOrganModal();
+        closeSearchModal();
+        closeBookmarksModal();
+      }
+    });
+
+    // Close Modals on Backdrop Click
+    document.querySelectorAll('.modal-backdrop').forEach(modal => {
+      modal.addEventListener('click', function (e) {
+        if (e.target === this) {
+          closeOrganModal();
+          closeSearchModal();
+          closeBookmarksModal();
+        }
+      });
+    });
+
+    // Smooth Scroll Active Nav Spy
+    window.addEventListener('scroll', function () {
+      const sections = ['hero', 'body-explorer', 'categories', 'how-it-works', 'organ-systems', 'organ-directory', 'compare', 'quizzes', 'glossary'];
+      const scrollPos = window.scrollY + 120;
+
+      for (const id of sections) {
+        const sec = document.getElementById(id);
+        if (sec) {
+          const top = sec.offsetTop;
+          const height = sec.offsetHeight;
+          if (scrollPos >= top && scrollPos < top + height) {
+            document.querySelectorAll('.primary-nav .nav-link').forEach(link => {
+              link.classList.toggle('active', link.getAttribute('href') === `#${id}`);
+            });
+            break;
+          }
+        }
+      }
     });
   }
 
-  // ==========================================================================
-  // 10. Theme Toggle (Light / Dark Mode)
-  // ==========================================================================
-  const themeToggleBtn = document.getElementById('btn-theme-toggle');
-  const savedTheme = localStorage.getItem('chromatica-theme') || 'dark';
-  document.body.setAttribute('data-theme', savedTheme);
-
-  if (themeToggleBtn) {
-    themeToggleBtn.addEventListener('click', () => {
-      const current = document.body.getAttribute('data-theme');
-      const next = current === 'dark' ? 'light' : 'dark';
-      document.body.setAttribute('data-theme', next);
-      localStorage.setItem('chromatica-theme', next);
-    });
+  // Run on DOM Ready
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+  } else {
+    init();
   }
 
-  // ==========================================================================
-  // 11. Clipboard Toast Notifications
-  // ==========================================================================
-  const toast = document.getElementById('toast');
-  const toastText = document.getElementById('toast-text');
-  let toastTimer = null;
-
-  function showToast(message) {
-    if (!toast || !toastText) return;
-    toastText.textContent = message;
-    toast.classList.add('show');
-
-    clearTimeout(toastTimer);
-    toastTimer = setTimeout(() => {
-      toast.classList.remove('show');
-    }, 2400);
-  }
-
-  function copyToClipboard(text, customMessage) {
-    navigator.clipboard.writeText(text).then(() => {
-      showToast(customMessage || `Copied ${text} to clipboard!`);
-    }).catch(() => {
-      // Fallback
-      const tempInput = document.createElement('input');
-      tempInput.value = text;
-      document.body.appendChild(tempInput);
-      tempInput.select();
-      document.execCommand('copy');
-      document.body.removeChild(tempInput);
-      showToast(customMessage || `Copied ${text}!`);
-    });
-  }
-
-  // Set current year in footer
-  const yearEl = document.getElementById('current-year');
-  if (yearEl) yearEl.textContent = new Date().getFullYear();
-
-  // ==========================================================================
-  // 12. Initial Boot
-  // ==========================================================================
-  renderHarmonyPalette();
-  updateConverterFromHex('#6366F1');
-  renderMoodPalettes();
-  renderColorGrid();
-  updateHeroSpotlight(COLOR_DATABASE[0]);
-});
+})();
